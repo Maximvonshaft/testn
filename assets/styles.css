@@ -1,0 +1,143 @@
+:root {
+  --bg: #f6f4ee;
+  --panel: #ffffff;
+  --ink: #1c1c1c;
+  --muted: #6f6b62;
+  --line: #e1ddd3;
+  --brand: #1f5f46;
+  --brand-dark: #174836;
+  --soft: #eef4ef;
+  --danger: #9d2b2b;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+.topbar, .placeholder {
+  padding: 28px;
+}
+
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(135deg, #fff 0%, #f8f4ea 100%);
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--brand);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+h1, h2 { margin: 0; }
+h1 { font-size: 30px; }
+h2 { font-size: 16px; margin-bottom: 14px; }
+.subtitle, .hint { color: var(--muted); }
+.subtitle { margin: 8px 0 0; max-width: 760px; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.04);
+}
+
+.controls { padding: 18px; }
+.controls label { display: block; margin: 14px 0; font-size: 13px; font-weight: 700; }
+input, textarea {
+  width: 100%;
+  margin-top: 6px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font: inherit;
+  background: #fff;
+}
+textarea { resize: vertical; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 20px 0; }
+
+.grid-two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.checkbox-row { display: flex !important; align-items: center; gap: 8px; font-weight: 500 !important; }
+.checkbox-row input { width: auto; margin: 0; }
+.button-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+button:disabled { opacity: .45; cursor: not-allowed; }
+.primary { background: var(--brand); color: #fff; width: 100%; }
+.primary:hover { background: var(--brand-dark); }
+.secondary { background: var(--soft); color: var(--brand-dark); }
+.ghost { background: transparent; color: var(--muted); }
+
+.status-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  white-space: nowrap;
+}
+.status-dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+.status-dot.idle { background: #bbb; }
+.status-dot.ok { background: #1f8f52; }
+.status-dot.busy { background: #c78b00; }
+.status-dot.error { background: var(--danger); }
+
+.workspace { min-width: 0; }
+.map {
+  height: 410px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background: #e9e3d5;
+}
+.result-panel { margin-top: 20px; overflow: hidden; }
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.metric { display: grid; place-items: center; min-width: 78px; padding: 10px; border-radius: 12px; background: var(--soft); }
+.metric strong { font-size: 24px; }
+.metric span { font-size: 12px; color: var(--muted); }
+.table-wrap { overflow: auto; max-height: 460px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+th { position: sticky; top: 0; background: #faf9f5; z-index: 1; }
+a { color: var(--brand); font-weight: 700; text-decoration: none; }
+.empty { text-align: center; color: var(--muted); padding: 28px; }
+.footer { padding: 14px 20px 26px; color: var(--muted); font-size: 13px; }
+
+@media (max-width: 980px) {
+  .topbar { flex-direction: column; }
+  .layout { grid-template-columns: 1fr; }
+  .map { height: 320px; }
+}
