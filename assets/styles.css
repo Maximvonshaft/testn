@@ -18,10 +18,7 @@ body {
   background: var(--bg);
 }
 
-.topbar, .placeholder {
-  padding: 28px;
-}
-
+.topbar, .placeholder { padding: 28px; }
 .topbar {
   display: flex;
   align-items: flex-start;
@@ -48,7 +45,7 @@ h2 { font-size: 16px; margin-bottom: 14px; }
 
 .layout {
   display: grid;
-  grid-template-columns: 360px minmax(0, 1fr);
+  grid-template-columns: 370px minmax(0, 1fr);
   gap: 20px;
   padding: 20px;
 }
@@ -62,7 +59,7 @@ h2 { font-size: 16px; margin-bottom: 14px; }
 
 .controls { padding: 18px; }
 .controls label { display: block; margin: 14px 0; font-size: 13px; font-weight: 700; }
-input, textarea {
+input, textarea, select {
   width: 100%;
   margin-top: 6px;
   border: 1px solid var(--line);
@@ -110,7 +107,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 
 .workspace { min-width: 0; }
 .map {
-  height: 410px;
+  height: 390px;
   border-radius: 16px;
   border: 1px solid var(--line);
   overflow: hidden;
@@ -128,10 +125,19 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .metric { display: grid; place-items: center; min-width: 78px; padding: 10px; border-radius: 12px; background: var(--soft); }
 .metric strong { font-size: 24px; }
 .metric span { font-size: 12px; color: var(--muted); }
-.table-wrap { overflow: auto; max-height: 460px; }
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.toolbar input, .toolbar select { margin-top: 0; }
+.table-wrap { overflow: auto; max-height: 520px; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 th { position: sticky; top: 0; background: #faf9f5; z-index: 1; }
+td input, td select { min-width: 140px; margin-top: 0; padding: 8px; }
 a { color: var(--brand); font-weight: 700; text-decoration: none; }
 .empty { text-align: center; color: var(--muted); padding: 28px; }
 .footer { padding: 14px 20px 26px; color: var(--muted); font-size: 13px; }
@@ -140,4 +146,5 @@ a { color: var(--brand); font-weight: 700; text-decoration: none; }
   .topbar { flex-direction: column; }
   .layout { grid-template-columns: 1fr; }
   .map { height: 320px; }
+  .toolbar { grid-template-columns: 1fr; }
 }
