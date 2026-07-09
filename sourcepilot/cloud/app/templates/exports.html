@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Exports</h1>
+<div class="panel"><p>{{ count }} leads available.</p><form method="post" action="/exports"><button>Generate clean CSV export</button></form></div>
+{% endblock %}
