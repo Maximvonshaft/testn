@@ -1,0 +1,30 @@
+{
+  "building_materials": {
+    "label": "Building Materials",
+    "markets": {
+      "switzerland": ["Zurich Switzerland", "Basel Switzerland", "Bern Switzerland", "Lausanne Switzerland", "Geneva Switzerland"],
+      "germany": ["Munich Germany", "Stuttgart Germany", "Frankfurt Germany", "Berlin Germany"],
+      "poland": ["Warsaw Poland", "Krakow Poland", "Wroclaw Poland"],
+      "ukraine": ["Lviv Ukraine", "Kyiv Ukraine", "Uzhhorod Ukraine"],
+      "romania": ["Bucharest Romania", "Cluj-Napoca Romania", "Timisoara Romania"],
+      "balkans": ["Podgorica Montenegro", "Belgrade Serbia", "Skopje North Macedonia", "Tirana Albania"]
+    },
+    "keywords": [
+      "building materials supplier",
+      "builders merchant",
+      "wall panel supplier",
+      "bathroom wall panels",
+      "flooring supplier",
+      "interior wall cladding supplier",
+      "construction materials store"
+    ]
+  },
+  "logistics_partners": {
+    "label": "Logistics Partners",
+    "markets": {
+      "balkans": ["Podgorica Montenegro", "Skopje North Macedonia", "Tirana Albania"],
+      "switzerland": ["Zurich Switzerland", "Basel Switzerland"]
+    },
+    "keywords": ["freight forwarder", "courier company", "warehouse logistics", "last mile delivery company"]
+  }
+}
