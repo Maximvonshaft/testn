@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Import Center</h1>
+<p class="muted">Upload CSV from the browser plugin, gosom/google-maps-scraper, or another free source.</p>
+<div class="panel">
+<form method="post" action="/import" enctype="multipart/form-data">
+<label>Campaign<select name="campaign_id"><option value="0">No campaign</option>{% for c in campaigns %}<option value="{{c.id}}">{{c.name}}</option>{% endfor %}</select></label>
+<label>CSV file<input type="file" name="file" accept=".csv" required></label>
+<button>Import and normalize</button>
+</form>
+</div>
+{% endblock %}

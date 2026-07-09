@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Queries: {{ campaign.name }}</h1>
+<div class="panel"><table><tr><th>City</th><th>Keyword</th><th>Query</th><th>Status</th></tr>{% for q in queries %}<tr><td>{{q.city}}</td><td>{{q.keyword}}</td><td>{{q.text}}</td><td>{{q.status}}</td></tr>{% endfor %}</table></div>
+{% endblock %}
