@@ -12,14 +12,14 @@ const config = {
 };
 
 const patterns = [
-  {id:'walnut-linear',name:'Walnut Linear',file:'walnut-linear.jpg',mood:'Warm · Refined · Calm'},
-  {id:'stone-grey',name:'Stone Grey',file:'stone-grey.jpg',mood:'Quiet · Architectural · Cool'},
-  {id:'soft-oak',name:'Soft Oak',file:'soft-oak.jpg',mood:'Natural · Light · Relaxed'},
-  {id:'marble-white',name:'Marble White',file:'marble-white.jpg',mood:'Clean · Spacious · Polished'},
-  {id:'marble-gold',name:'Marble Gold',file:'marble-gold.jpg',mood:'Expressive · Premium · Warm'},
-  {id:'charcoal-rib',name:'Charcoal Rib',file:'charcoal-rib.jpg',mood:'Dark · Graphic · Dramatic'},
-  {id:'decking-teak',name:'Decking Teak',file:'decking-teak.jpg',mood:'Outdoor · Tactile · Grounded'},
-  {id:'modern-concrete',name:'Modern Concrete',file:'modern-concrete.jpg',mood:'Urban · Minimal · Quiet'}
+  {id:'walnut-linear',name:'Walnut Linear',file:'walnut-linear.svg',mood:'Warm · Refined · Calm'},
+  {id:'stone-grey',name:'Stone Grey',file:'stone-grey.svg',mood:'Quiet · Architectural · Cool'},
+  {id:'soft-oak',name:'Soft Oak',file:'soft-oak.svg',mood:'Natural · Light · Relaxed'},
+  {id:'marble-white',name:'Marble White',file:'marble-white.svg',mood:'Clean · Spacious · Polished'},
+  {id:'marble-gold',name:'Marble Gold',file:'marble-gold.svg',mood:'Expressive · Premium · Warm'},
+  {id:'charcoal-rib',name:'Charcoal Rib',file:'charcoal-rib.svg',mood:'Dark · Graphic · Dramatic'},
+  {id:'decking-teak',name:'Decking Teak',file:'decking-teak.svg',mood:'Outdoor · Tactile · Grounded'},
+  {id:'modern-concrete',name:'Modern Concrete',file:'modern-concrete.svg',mood:'Urban · Minimal · Quiet'}
 ];
 const profiles = [
   {id:'flat',name:'Flat'}, {id:'slat',name:'Slat 18'}, {id:'fluted',name:'Fluted'}, {id:'wide-rib',name:'Wide Rib'}, {id:'groove',name:'Groove'}, {id:'decking',name:'Decking'}
