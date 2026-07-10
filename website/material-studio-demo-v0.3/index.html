@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" data-mode="design">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Material Studio — interactive composite surface configurator." />
+  <title>Material Studio — Interactive Demo v0.3</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Material Studio home">
+      <span class="brand-glyph">✦</span>
+      <span><strong>Material Studio</strong><small>Composite Surface Systems</small></span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#spaces">Spaces</a><a href="#materials">Materials</a><a class="active" href="#studio">Studio</a>
+      <a href="#technology">Technology</a><a href="#projects">Projects</a><a href="#distributor">Distributor</a><a href="#samples">Samples</a>
+    </nav>
+    <div class="top-actions">
+      <button id="soundBtn" class="ghost icon" type="button" aria-pressed="false" title="Ambient sound">◖◗</button>
+      <button class="ghost" type="button">EN</button>
+      <button class="outline" type="button" data-dialog="sample">Request sample</button>
+    </div>
+  </header>
+
+  <main id="studio">
+    <section class="visual-stage" aria-label="Interactive material scene">
+      <canvas id="sceneCanvas" width="1920" height="1080" aria-label="Configurable scene preview"></canvas>
+      <div class="scene-vignette"></div>
+      <div id="aromaFx" class="aroma-fx" aria-hidden="true"></div>
+
+      <aside class="story-panel glass">
+        <p class="eyebrow">Surface Composer</p>
+        <h1>Build the <em>atmosphere</em>, not just the wall.</h1>
+        <p class="intro">Every surface. Every detail. Every feeling—composed around the space.</p>
+        <div class="scheme-summary">
+          <p class="eyebrow">Current scheme</p>
+          <strong id="sceneName">Luxe Hotel Suite</strong>
+          <dl>
+            <div><dt>Surface</dt><dd id="summarySurface">Wall Surface</dd></div>
+            <div><dt>Pattern</dt><dd id="summaryPattern">Walnut Linear WPC</dd></div>
+            <div><dt>Profile</dt><dd id="summaryProfile">Slat Panel</dd></div>
+            <div><dt>Aroma</dt><dd id="summaryAroma">Jasmine · Soft</dd></div>
+            <div><dt>Mood</dt><dd id="summaryMood">Warm · Refined · Calm</dd></div>
+          </dl>
+        </div>
+        <div class="code-card"><small>Scheme code</small><code id="schemeCode">MS-HOT-WAL-SLAT-JAS-2400</code><button id="copyCode" class="icon" title="Copy">⧉</button></div>
+      </aside>
+
+      <div class="mode-switch glass" role="tablist" aria-label="Experience mode">
+        <button class="active" data-mode="design">Design</button>
+        <button data-mode="layer">Layer</button>
+        <button data-mode="install">Install</button>
+        <button data-mode="aroma">Aroma</button>
+      </div>
+
+      <aside class="surface-panel glass" id="spaces">
+        <header><p class="eyebrow">Choose surface</p><small>Compose one area at a time</small></header>
+        <div id="surfaceList" class="surface-list"></div>
+      </aside>
+
+      <div class="region-label" id="activeRegionLabel">Wall Surface</div>
+
+      <div class="scene-selector glass" aria-label="Choose scene">
+        <button id="scenePrev" class="scene-arrow" type="button">‹</button>
+        <div id="sceneStrip" class="scene-strip"></div>
+        <button id="sceneNext" class="scene-arrow" type="button">›</button>
+      </div>
+
+      <section id="modeOverlay" class="mode-overlay" aria-live="polite"></section>
+    </section>
+
+    <section class="instrument glass" id="materials" aria-label="Material parameter instrument">
+      <div class="instrument-intro"><p class="eyebrow">Parameter instrument</p><h2 id="instrumentTitle">Wall composition</h2><p id="instrumentHelp">Select the pattern, profile, tone, finish and dimensions that shape this surface.</p></div>
+      <div class="parameter pattern-control"><header><span>Pattern</span><small id="patternValue">Walnut Linear WPC</small></header><div id="patternRibbon" class="pattern-ribbon"></div></div>
+      <div class="parameter profile-control"><header><span>Profile</span><small id="profileValue">Slat Panel</small></header><div id="profileRibbon" class="profile-ribbon"></div></div>
+      <div class="parameter tone-control"><header><span>Tone</span><small id="toneValue">Warm Neutral</small></header><div class="dial"><div id="toneOrb" class="tone-orb"></div><input id="toneRange" type="range" min="-40" max="40" value="8" aria-label="Tone" /></div></div>
+      <div class="parameter finish-control"><header><span>Finish</span><small id="finishValue">Silk Matte</small></header><div id="finishRibbon" class="finish-ribbon"></div></div>
+      <div class="parameter aroma-control"><header><span>Aroma</span><small id="aromaValue">Jasmine · Soft</small></header><button id="aromaOrb" class="aroma-orb" type="button"><img id="aromaOrbImg" alt="Aroma atmosphere" /></button><div id="aromaDots" class="aroma-dots"></div><input id="aromaRange" type="range" min="0" max="100" value="46" aria-label="Aroma intensity" /></div>
+      <div class="parameter dimension-control"><header><span>Dimension</span><small id="dimensionValue">2400 mm</small></header><div class="ruler"><span>600</span><span>1200</span><span>1800</span><span>2400</span><span>3000</span><i id="rulerNeedle"></i></div><input id="dimensionRange" type="range" min="600" max="3000" step="200" value="2400" aria-label="Dimension" /></div>
+    </section>
+
+    <footer class="actionbar" id="samples">
+      <div class="action-code"><small>Configuration code</small><code id="configCode">MS-HOT-WAL-SLAT-JAS-2400</code></div>
+      <p>Your space. Your mood. Your material. <strong>Crafted by you.</strong></p>
+      <button id="saveBtn" class="ghost">Save scheme</button>
+      <button class="ghost" data-dialog="sample">Request sample</button>
+      <button id="specBtn" class="ghost">Download spec</button>
+      <button class="primary" data-dialog="quote">Ask for quote <span>→</span></button>
+    </footer>
+  </main>
+</div>
+
+<dialog id="leadDialog">
+  <form method="dialog" class="lead-form">
+    <button class="close" value="cancel" aria-label="Close">×</button>
+    <p class="eyebrow" id="dialogEyebrow">Material request</p>
+    <h2 id="dialogTitle">Request this material scheme</h2>
+    <p id="dialogIntro">The current scheme is attached automatically.</p>
+    <label>Name<input required /></label><label>Company<input required /></label>
+    <label>Country<input /></label><label>Role<select><option>Architect / Designer</option><option>Builder / Contractor</option><option>Distributor / Importer</option><option>Hotel / Project Owner</option></select></label>
+    <label>Project area (m²)<input type="number" min="0" /></label><label>Timeline<select><option>0–3 months</option><option>3–6 months</option><option>6–12 months</option><option>Exploring</option></select></label>
+    <label class="wide">Notes<textarea rows="4"></textarea></label>
+    <div class="dialog-code wide"><span>Configuration</span><code id="dialogCode"></code></div>
+    <button class="primary wide" value="submit">Submit request</button>
+  </form>
+</dialog>
+<script src="assets/app.js"></script>
+</body>
+</html>
