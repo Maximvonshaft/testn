@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en" data-surface="wall" data-mode="design" data-tone="0" data-finish="matte" data-aroma="jasmine">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Interactive composite surface configurator for premium hospitality, residential and commercial spaces." />
+  <title>Material Studio — Surface Composer</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="site-header">
+      <a href="#" class="brand" aria-label="Material Studio home">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span><strong>Material Studio</strong><small>Composite Surface Systems</small></span>
+      </a>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="#spaces">Spaces</a>
+        <a href="#materials">Materials</a>
+        <a class="active" href="#studio">Studio</a>
+        <a href="#technology">Technology</a>
+        <a href="#projects">Projects</a>
+        <a href="#distributor">Distributor</a>
+        <a href="#samples">Samples</a>
+      </nav>
+      <div class="header-actions">
+        <button id="soundToggle" class="icon-btn" aria-pressed="false" title="Ambient sound">◖◗</button>
+        <button class="language-btn">EN</button>
+        <button class="menu-btn" aria-label="Open menu">☰</button>
+      </div>
+    </header>
+
+    <main id="studio" class="studio-stage">
+      <section class="scene" aria-label="Interactive hotel suite scene">
+        <img class="scene-base" src="assets/scenes/hotel-suite-base.jpg" alt="Premium hotel suite with configurable wall, floor, door-wall, ceiling, trim and aroma surfaces" />
+        <div class="scene-shade"></div>
+
+        <div class="surface-overlay surface-wall" data-overlay="wall"></div>
+        <div class="surface-overlay surface-floor" data-overlay="floor"></div>
+        <div class="surface-overlay surface-doorwall" data-overlay="doorwall"></div>
+        <div class="surface-overlay surface-ceiling" data-overlay="ceiling"></div>
+        <div class="trim-overlay" data-overlay="trim"></div>
+        <div class="aroma-overlay" data-overlay="aroma"><img id="aromaArt" src="assets/aroma/jasmine.svg" alt="" /></div>
+
+        <div class="install-sequence" aria-hidden="true">
+          <span class="install-panel p1"></span><span class="install-panel p2"></span><span class="install-panel p3"></span><span class="install-panel p4"></span>
+          <strong>align · lock · finish</strong>
+        </div>
+        <div class="layer-sequence" aria-hidden="true">
+          <span class="layer l1">Finish film</span>
+          <span class="layer l2">Decorative pattern</span>
+          <span class="layer l3">Composite core</span>
+          <span class="layer l4">Optional aroma matrix</span>
+          <span class="layer l5">Backing layer</span>
+        </div>
+
+        <aside class="story-panel glass">
+          <p class="eyebrow">Surface Composer</p>
+          <h1>Build the <em>atmosphere</em>, not just the wall.</h1>
+          <p class="story-copy">Every surface. Every detail. Every feeling—composed around the space.</p>
+          <div class="scheme-summary">
+            <p class="eyebrow">Current scheme</p>
+            <h2 id="schemeName">Luxe Hotel Suite</h2>
+            <dl>
+              <div><dt>Surface</dt><dd id="summarySurface">Wall</dd></div>
+              <div><dt>Pattern</dt><dd id="summaryPattern">Walnut Linear</dd></div>
+              <div><dt>Profile</dt><dd id="summaryProfile">Slat 18</dd></div>
+              <div><dt>Aroma</dt><dd id="summaryAroma">Jasmine Soft</dd></div>
+              <div><dt>Mood</dt><dd id="summaryMood">Warm · Refined · Calm</dd></div>
+            </dl>
+          </div>
+        </aside>
+
+        <div class="mode-switch" role="tablist" aria-label="Experience mode">
+          <button class="active" data-mode="design">Design</button>
+          <button data-mode="layer">Layer</button>
+          <button data-mode="install">Install</button>
+          <button data-mode="aroma">Aroma</button>
+        </div>
+
+        <aside class="surface-chooser glass" id="spaces">
+          <div class="surface-header"><p class="eyebrow">Choose surface</p><small>Select one area to compose</small></div>
+          <button class="surface-item active" data-surface="wall"><span class="surface-swatch wall-swatch"></span><span><b>Wall</b><small>WPC / SPC / Marble</small></span></button>
+          <button class="surface-item" data-surface="floor"><span class="surface-swatch floor-swatch"></span><span><b>Floor</b><small>ASA / Indoor surface</small></span></button>
+          <button class="surface-item" data-surface="doorwall"><span class="surface-swatch door-swatch"></span><span><b>Door–Wall</b><small>Seamless matching system</small></span></button>
+          <button class="surface-item" data-surface="ceiling"><span class="surface-swatch ceiling-swatch"></span><span><b>Ceiling</b><small>PVC ceiling system</small></span></button>
+          <button class="surface-item" data-surface="trim"><span class="surface-swatch trim-swatch"></span><span><b>Trim</b><small>Corner & edge</small></span></button>
+          <button class="surface-item" data-surface="aroma"><span class="surface-swatch aroma-swatch">✿</span><span><b>Aroma</b><small>Optional atmosphere layer</small></span></button>
+        </aside>
+
+        <button class="scene-region region-wall" data-surface="wall" aria-label="Edit wall surface"><span>Wall</span></button>
+        <button class="scene-region region-floor" data-surface="floor" aria-label="Edit floor surface"><span>Floor</span></button>
+        <button class="scene-region region-doorwall" data-surface="doorwall" aria-label="Edit door-wall system"><span>Door–Wall</span></button>
+        <button class="scene-region region-ceiling" data-surface="ceiling" aria-label="Edit ceiling"><span>Ceiling</span></button>
+        <button class="scene-region region-trim" data-surface="trim" aria-label="Edit trim"><span>Trim</span></button>
+        <button class="scene-region region-aroma" data-surface="aroma" aria-label="Edit aroma layer"><span>Aroma</span></button>
+      </section>
+
+      <section class="parameter-instrument glass" id="materials" aria-label="Material parameter instrument">
+        <div class="instrument-heading">
+          <p class="eyebrow">Parameter instrument</p>
+          <strong id="instrumentTitle">Wall composition</strong>
+        </div>
+
+        <div class="parameter pattern-parameter">
+          <div class="parameter-title"><span>Pattern</span><small id="patternLabel">Walnut Linear</small></div>
+          <div id="patternRibbon" class="pattern-ribbon" role="radiogroup" aria-label="Pattern selection"></div>
+        </div>
+
+        <div class="parameter profile-parameter">
+          <div class="parameter-title"><span>Profile</span><small id="profileLabel">Slat 18</small></div>
+          <div id="profileOptions" class="profile-options" role="radiogroup" aria-label="Profile selection"></div>
+        </div>
+
+        <div class="parameter tone-parameter">
+          <div class="parameter-title"><span>Tone</span><small id="toneLabel">Warm Neutral</small></div>
+          <div class="tone-dial"><div class="tone-core" id="toneCore"></div><input id="toneRange" type="range" min="-40" max="40" value="0" aria-label="Tone temperature" /></div>
+        </div>
+
+        <div class="parameter finish-parameter">
+          <div class="parameter-title"><span>Finish</span><small id="finishLabel">Matte</small></div>
+          <div id="finishOptions" class="finish-options" role="radiogroup" aria-label="Finish selection"></div>
+        </div>
+
+        <div class="parameter aroma-parameter">
+          <div class="parameter-title"><span>Aroma</span><small id="aromaLabel">Jasmine Soft</small></div>
+          <button id="aromaOrb" class="aroma-orb" aria-label="Change aroma"><img src="assets/aroma/jasmine.svg" alt="Jasmine" /></button>
+          <div id="aromaOptions" class="aroma-options" role="radiogroup" aria-label="Aroma selection"></div>
+          <input id="aromaIntensity" type="range" min="0" max="100" value="48" aria-label="Aroma intensity" />
+        </div>
+
+        <div class="parameter dimension-parameter">
+          <div class="parameter-title"><span>Dimension</span><small id="dimensionLabel">2400 mm</small></div>
+          <div class="dimension-ruler"><span>600</span><span>1200</span><span>1800</span><span>2400</span><span>3000</span><i id="dimensionNeedle"></i></div>
+          <input id="dimensionRange" type="range" min="600" max="3000" step="200" value="2400" aria-label="Panel dimension" />
+        </div>
+      </section>
+
+      <footer class="conversion-bar">
+        <div class="config-block"><small>Configuration code</small><code id="configurationCode">MS-WALL-WALNUT-SLAT-JAS-2400</code><button id="copyCode" aria-label="Copy code">⧉</button></div>
+        <p>Your space. Your mood. Your material. <strong>Crafted by you.</strong></p>
+        <button id="saveScheme">Save scheme</button>
+        <button id="requestSample">Request sample</button>
+        <button id="downloadSpec">Download spec</button>
+        <button id="askQuote" class="primary-cta">Ask for quote <span>→</span></button>
+      </footer>
+    </main>
+  </div>
+
+  <dialog id="leadDialog">
+    <form method="dialog" class="lead-form">
+      <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+      <p class="eyebrow" id="dialogEyebrow">Material request</p>
+      <h2 id="dialogTitle">Request this material scheme</h2>
+      <p id="dialogIntro">Your current configuration will be attached automatically.</p>
+      <label>Name<input name="name" required /></label>
+      <label>Company<input name="company" required /></label>
+      <label>Country<input name="country" /></label>
+      <label>Role<select name="role"><option>Architect / Designer</option><option>Builder / Contractor</option><option>Distributor / Importer</option><option>Hotel / Project owner</option></select></label>
+      <label>Project area (m²)<input name="area" type="number" min="0" /></label>
+      <label>Notes<textarea name="notes" rows="3"></textarea></label>
+      <div class="dialog-code"><span>Configuration</span><code id="dialogCode"></code></div>
+      <button class="primary-cta" value="submit">Submit request</button>
+    </form>
+  </dialog>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
