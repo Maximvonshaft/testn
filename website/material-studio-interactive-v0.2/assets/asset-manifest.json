@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "scene": {
+    "production": "assets/scenes/hotel-suite-base.jpg",
+    "repositoryFallback": "assets/scenes/hotel-suite-fallback.svg"
+  },
+  "textures": [
+    "walnut-linear",
+    "stone-grey",
+    "soft-oak",
+    "marble-white",
+    "marble-gold",
+    "charcoal-rib",
+    "decking-teak",
+    "modern-concrete"
+  ],
+  "profiles": ["flat", "slat", "fluted", "wide-rib", "groove", "decking"],
+  "aromas": ["jasmine", "cedar", "tea", "citrus", "spa"],
+  "interactiveSurfaces": ["wall", "floor", "doorwall", "ceiling", "trim", "aroma"],
+  "assetSources": {
+    "productionTextureCrops": "Zhongxin product catalog",
+    "sceneComposition": "approved Material Studio concept mockup",
+    "svgFallbacks": "generated for repository-safe demo"
+  },
+  "productionReplacementRequired": [
+    "final scene master",
+    "precision surface masks",
+    "verified seamless product textures",
+    "actual mold/profile dimensions",
+    "approved aroma claims"
+  ]
+}
