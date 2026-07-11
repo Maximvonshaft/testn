@@ -1,0 +1,34 @@
+{
+  "version": "0.5.0",
+  "scene": {
+    "id": "hotel-suite-golden-wall",
+    "name": "Luxe Hotel Suite",
+    "width": 1672,
+    "height": 941,
+    "base": "assets/scene/base.webp",
+    "wallMask": "assets/wall/mask.png",
+    "wallQuad": [[1362,0],[1671,0],[1671,688],[1362,637]]
+  },
+  "materials": [
+    {"id":"smoked-walnut","name":"Smoked Walnut","demoCode":"ZX-DWC-SW51","family":"wood","tone":"warm","thumbnail":"assets/wall/thumbs/smoked-walnut.webp"},
+    {"id":"soft-oak","name":"Soft Oak","demoCode":"ZX-WPC-SO02","family":"wood","tone":"warm","thumbnail":"assets/wall/thumbs/soft-oak.webp"},
+    {"id":"warm-grey-stone","name":"Warm Grey Stone","demoCode":"ZX-SPC-WG11","family":"stone","tone":"neutral","thumbnail":"assets/wall/thumbs/warm-grey-stone.webp"},
+    {"id":"white-marble","name":"White Marble","demoCode":"ZX-UV-WM21","family":"stone","tone":"cool","thumbnail":"assets/wall/thumbs/white-marble.webp"},
+    {"id":"gold-vein-marble","name":"Gold Vein Marble","demoCode":"ZX-UV-GV22","family":"stone","tone":"warm","thumbnail":"assets/wall/thumbs/gold-vein-marble.webp"},
+    {"id":"ivory-panel","name":"Ivory Panel","demoCode":"ZX-BWF-IV41","family":"solid","tone":"neutral","thumbnail":"assets/wall/thumbs/ivory-panel.webp"}
+  ],
+  "profiles": [
+    {"id":"flat","name":"Flat Panel","demoCode":"P-FLAT","thumbnail":"assets/wall/profile-thumbs/flat.webp"},
+    {"id":"slat","name":"Slat Panel","demoCode":"P-SLAT18","thumbnail":"assets/wall/profile-thumbs/slat.webp"},
+    {"id":"fluted","name":"Fluted Panel","demoCode":"P-FLUTED","thumbnail":"assets/wall/profile-thumbs/fluted.webp"},
+    {"id":"wide-rib","name":"Wide Rib","demoCode":"P-RIB60","thumbnail":"assets/wall/profile-thumbs/wide-rib.webp"}
+  ],
+  "finishes": [
+    {"id":"matte","name":"Silk Matte"},
+    {"id":"satin","name":"Satin"},
+    {"id":"soft-gloss","name":"Soft Gloss"}
+  ],
+  "dimensions": [2400,2800,3000],
+  "defaults": {"material":"smoked-walnut","profile":"flat","finish":"satin","dimension":2800},
+  "disclaimer": "Product and profile codes are demonstration identifiers pending factory confirmation."
+}
