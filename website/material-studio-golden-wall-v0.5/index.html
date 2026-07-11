@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Material Studio Golden Wall Composer — a scene-aligned composite surface configurator." />
+  <title>Material Studio — Golden Wall Composer</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div id="app" class="app-shell" aria-busy="true">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Material Studio home">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span><strong>Material Studio</strong><small>Composite Surface Systems</small></span>
+      </a>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="#experience">Experience</a>
+        <a class="active" href="#composer">Wall Composer</a>
+        <a href="#materials">Materials</a>
+        <a href="#technology">Technology</a>
+        <a href="#projects">Projects</a>
+      </nav>
+      <div class="header-actions">
+        <span class="verified-badge">Scene-aligned demo</span>
+        <button class="outline-button" type="button" data-dialog="sample">Request sample</button>
+      </div>
+    </header>
+
+    <main class="workspace" id="composer">
+      <aside class="story-card panel">
+        <p class="eyebrow">Golden Wall System</p>
+        <h1>Replace the wall.<br><em>Nothing else moves.</em></h1>
+        <p class="story-copy">One verified surface plane, rendered offline and aligned to the source scene. The bed, floor, ceiling, cabinet and lighting remain untouched.</p>
+
+        <div class="scheme-summary">
+          <p class="eyebrow">Current composition</p>
+          <dl>
+            <div><dt>Space</dt><dd>Luxe Hotel Suite</dd></div>
+            <div><dt>Surface</dt><dd>Feature Wall</dd></div>
+            <div><dt>Material</dt><dd id="summaryMaterial">Smoked Walnut</dd></div>
+            <div><dt>Profile</dt><dd id="summaryProfile">Flat Panel</dd></div>
+            <div><dt>Finish</dt><dd id="summaryFinish">Satin</dd></div>
+          </dl>
+        </div>
+
+        <div class="principle-card">
+          <span>Outside-wall invariant</span>
+          <strong>0 modified pixels</strong>
+          <small>Verified by the asset regression test.</small>
+        </div>
+      </aside>
+
+      <section class="scene-column" id="experience">
+        <div class="scene-toolbar">
+          <div>
+            <p class="eyebrow">Live material view</p>
+            <strong id="sceneStatus">Smoked Walnut · Flat Panel</strong>
+          </div>
+          <div class="toolbar-actions">
+            <button id="beforeToggle" class="toggle-button" type="button" aria-pressed="false">
+              <span class="toggle-dot"></span> Show original wall
+            </button>
+          </div>
+        </div>
+
+        <div class="scene-frame" id="sceneFrame" data-finish="satin">
+          <img id="baseScene" class="scene-layer base-scene" alt="High-end hotel suite with a configurable right feature wall" />
+          <img id="overlayA" class="scene-layer wall-overlay" alt="Selected wall material" />
+          <img id="overlayB" class="scene-layer wall-overlay" alt="Selected wall material" />
+          <div class="wall-sheen" aria-hidden="true"></div>
+          <svg class="wall-outline" viewBox="0 0 1672 941" aria-hidden="true">
+            <polygon points="1362,0 1671,0 1671,688 1362,637"></polygon>
+          </svg>
+          <button class="wall-hotspot" type="button" aria-label="Feature wall selected">
+            <span><i></i> Feature Wall</span>
+          </button>
+          <div id="wallLoading" class="wall-loading" role="status" aria-live="polite">Rendering wall…</div>
+          <div id="beforeBadge" class="before-badge">Original marble wall</div>
+        </div>
+
+        <div class="scene-proof-row">
+          <div><span>01</span><strong>Exact plane</strong><small>Single approved quadrilateral</small></div>
+          <div><span>02</span><strong>Pre-rendered relief</strong><small>No runtime mask drift</small></div>
+          <div><span>03</span><strong>Double-buffered swap</strong><small>No blank frames on load failure</small></div>
+        </div>
+      </section>
+
+      <aside class="configurator panel" id="materials">
+        <div class="config-header">
+          <p class="eyebrow">Configure feature wall</p>
+          <h2>Material & profile</h2>
+          <p>Select a finish generated against the same wall geometry as the scene.</p>
+        </div>
+
+        <section class="control-section">
+          <header><span>Material</span><small id="materialCode">ZX-DWC-SW51 · demo code</small></header>
+          <div id="materialGrid" class="material-grid" role="radiogroup" aria-label="Wall materials"></div>
+        </section>
+
+        <section class="control-section">
+          <header><span>Profile</span><small id="profileCode">P-FLAT · demo code</small></header>
+          <div id="profileGrid" class="profile-grid" role="radiogroup" aria-label="Wall profiles"></div>
+        </section>
+
+        <section class="control-section compact-section">
+          <header><span>Finish</span><small id="finishLabel">Satin</small></header>
+          <div id="finishGrid" class="segmented-control" role="radiogroup" aria-label="Surface finish"></div>
+        </section>
+
+        <section class="control-section compact-section">
+          <header><span>Panel height</span><small>Specification only</small></header>
+          <div id="dimensionGrid" class="segmented-control" role="radiogroup" aria-label="Panel height"></div>
+        </section>
+
+        <div class="config-code-card">
+          <small>Configuration code</small>
+          <code id="configurationCode"></code>
+          <button id="copyCode" type="button" aria-label="Copy configuration code">⧉</button>
+        </div>
+        <p class="catalog-disclaimer" id="catalogDisclaimer"></p>
+      </aside>
+    </main>
+
+    <footer class="actionbar">
+      <div class="action-summary">
+        <small>Selected system</small>
+        <strong id="actionSummary">Feature Wall · Smoked Walnut · Flat Panel</strong>
+      </div>
+      <div class="action-message">Your space. Your material. <strong>Aligned by design.</strong></div>
+      <button id="saveScheme" class="ghost-button" type="button">Save scheme</button>
+      <button id="downloadSpec" class="ghost-button" type="button">Download spec</button>
+      <button class="primary-button" type="button" data-dialog="quote">Ask for quote <span>→</span></button>
+    </footer>
+  </div>
+
+  <div id="initialLoading" class="initial-loading" role="status" aria-live="polite">
+    <span class="spinner"></span>
+    <strong>Preparing the verified wall plane</strong>
+    <small>Loading scene and scene-aligned material overlay…</small>
+  </div>
+
+  <div id="fatalError" class="fatal-error" hidden>
+    <p class="eyebrow">Unable to start composer</p>
+    <h2 id="fatalTitle">Required assets could not be loaded.</h2>
+    <p id="fatalMessage"></p>
+    <button id="retryButton" class="primary-button" type="button">Retry</button>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="leadDialog">
+    <form id="leadForm" class="lead-form" method="dialog">
+      <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+      <p class="eyebrow" id="dialogEyebrow">Project request</p>
+      <h2 id="dialogTitle">Request this wall scheme</h2>
+      <p id="dialogIntro">The current material, profile and specification code will be attached automatically.</p>
+      <input type="hidden" name="requestType" id="requestType" />
+      <label>Name<input name="name" autocomplete="name" required /></label>
+      <label>Company<input name="company" autocomplete="organization" required /></label>
+      <label>Email<input name="email" type="email" autocomplete="email" required /></label>
+      <label>Country<input name="country" autocomplete="country-name" /></label>
+      <label>Project area (m²)<input name="area" type="number" min="0" /></label>
+      <label>Role<select name="role"><option>Architect / Designer</option><option>Builder / Contractor</option><option>Distributor / Importer</option><option>Hotel / Project Owner</option></select></label>
+      <label class="wide">Notes<textarea name="notes" rows="4"></textarea></label>
+      <div class="dialog-code wide"><span>Configuration</span><code id="dialogCode"></code></div>
+      <button id="submitLead" class="primary-button wide" value="submit">Submit request</button>
+    </form>
+  </dialog>
+
+  <script type="module" src="assets/app.mjs"></script>
+</body>
+</html>
