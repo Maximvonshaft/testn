@@ -1,4 +1,4 @@
-# Material Studio Golden Wall Composer v0.5
+# Material Studio Golden Wall Composer v0.5.1
 
 This iteration replaces the failed broad runtime-mask compositor with one deterministic, scene-aligned wall system.
 
@@ -34,11 +34,7 @@ chmod +x START_MAC_LINUX.sh
 ./START_MAC_LINUX.sh
 ```
 
-Then open:
-
-```text
-http://127.0.0.1:8080
-```
+The launcher opens the correct URL automatically. It prefers port `8080`; when that port is already occupied it selects the next available local port and opens that address instead.
 
 Do not open `index.html` directly because the catalog and lead API require an HTTP server.
 
@@ -83,12 +79,19 @@ Run:
 
 ```bash
 python tools/build_assets.py
-python -m unittest tests/test_asset_pipeline.py tests/test_server.py -v
+python -m unittest tests/test_asset_pipeline.py tests/test_server.py tests/test_launcher.py -v
 node --test tests/state.test.mjs
 node --check assets/state.mjs
 node --check assets/app.mjs
 python tools/validate_demo.py
 ```
+
+## Startup troubleshooting
+
+- Keep the terminal/command window open while using the demo.
+- Do not open `index.html` directly.
+- Do not manually type `http://127.0.0.1:8080`; the launcher may choose `8081`, `8082`, or another available port.
+- Older versions opened the browser before the server was ready and failed when port 8080 was occupied. v0.5.1 binds the server first, selects a free port, and only then opens the browser.
 
 ## Important boundary
 
@@ -98,4 +101,4 @@ Material and profile identifiers are demonstration codes pending factory confirm
 
 ## GitHub binary boundary
 
-The GitHub connector records the source code, tests, specification and implementation plan. The generated WebP overlays, PNG masks, material thumbnails and source images are delivered separately in `material_studio_demo_v0_5_superpowers.zip` and require direct Git, Git LFS, a release asset or object storage before this directory is independently runnable from the repository.
+The GitHub connector records the source code, tests, specification and implementation plan. The generated WebP overlays, PNG masks, material thumbnails and source images are delivered separately in `material_studio_demo_v0_5_1_superpowers.zip` and require direct Git, Git LFS, a release asset or object storage before this directory is independently runnable from the repository.
