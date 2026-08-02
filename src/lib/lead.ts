@@ -2,7 +2,7 @@ import { z } from 'astro/zod';
 
 export const leadSchema = z.object({
   name: z.string().trim().min(2).max(120),
-  email: z.string().trim().email().max(180),
+  email: z.string().trim().max(180).pipe(z.email()),
   company: z.string().trim().max(180).optional().default(''),
   country: z.string().trim().min(2).max(120),
   projectType: z.string().trim().min(2).max(80),
