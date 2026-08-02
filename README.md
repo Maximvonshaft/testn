@@ -19,11 +19,13 @@ A production architecture for AQUASTONE mineral-composite surface systems, imple
 
 ```bash
 corepack enable
-pnpm install
+pnpm install --frozen-lockfile
 pnpm dev
 ```
 
 The website is available at `http://127.0.0.1:4321/en/`.
+
+The pnpm workspace explicitly allows the required deterministic install scripts for `esbuild` and `workerd`; all other dependency build scripts remain denied by default.
 
 ## Production gates
 
