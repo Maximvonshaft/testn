@@ -1,181 +1,46 @@
 {
-  "passed": 35,
-  "total": 35,
-  "results": [
+  "status": "passed",
+  "accepted_at": "2026-08-02",
+  "head_sha": "30071a73b8ca517a46a4fe113f29b2238605103e",
+  "workflow_run_id": 30739948669,
+  "workflow_artifact_id": 8830935926,
+  "workflow_artifact_digest": "sha256:df3bd7b9fa07ad7793575ad3862730dd6fb1b8814bb6d60f6ffd12f9d57a603c",
+  "gates": {
+    "static-validation": "passed",
+    "browser-qa": "passed"
+  },
+  "viewports": [
     {
-      "name": "desktop-1440: title",
-      "pass": true,
-      "detail": "AQUASTONE \u2014 Mineral Composite Surface Systems"
+      "label": "desktop-1440x900",
+      "width": 1440,
+      "height": 900,
+      "status": "passed",
+      "baseline_screenshot": "desktop-1440x900-baseline.png",
+      "full_page_screenshot": "desktop-1440x900-full.png"
     },
     {
-      "name": "desktop-1440: main",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "desktop-1440: horizontal overflow",
-      "pass": true,
-      "detail": "1440 / 1440"
-    },
-    {
-      "name": "desktop-1440: h1 visible",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "desktop-1440: one h1",
-      "pass": true,
-      "detail": "1"
-    },
-    {
-      "name": "desktop-1440: 9 materials",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "desktop-1440: system copy",
-      "pass": true,
-      "detail": "Performance,\nbeautifully resolved."
-    },
-    {
-      "name": "desktop-1440: system sync",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "desktop-1440: material state",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "desktop-1440: material aria",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "desktop-1440: layer sync",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "desktop-1440: dialog open",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "desktop-1440: form controls",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "desktop-1440: dialog close",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "desktop-1440: i18n",
-      "pass": true,
-      "detail": "TECHNIK"
-    },
-    {
-      "name": "desktop-1440: footer visible",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "desktop-1440: no page errors",
-      "pass": true,
-      "detail": "[]"
-    },
-    {
-      "name": "mobile-390: title",
-      "pass": true,
-      "detail": "AQUASTONE \u2014 Mineral Composite Surface Systems"
-    },
-    {
-      "name": "mobile-390: main",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: horizontal overflow",
-      "pass": true,
-      "detail": "390 / 390"
-    },
-    {
-      "name": "mobile-390: h1 visible",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: one h1",
-      "pass": true,
-      "detail": "1"
-    },
-    {
-      "name": "mobile-390: 9 materials",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: system copy",
-      "pass": true,
-      "detail": "Performance,\nbeautifully resolved."
-    },
-    {
-      "name": "mobile-390: system sync",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: material state",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: material aria",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: layer sync",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: dialog open",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: form controls",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: dialog close",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: mobile nav open",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: mobile nav close",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: footer visible",
-      "pass": true,
-      "detail": ""
-    },
-    {
-      "name": "mobile-390: no page errors",
-      "pass": true,
-      "detail": "[]"
+      "label": "mobile-390x844",
+      "width": 390,
+      "height": 844,
+      "status": "passed",
+      "baseline_screenshot": "mobile-390x844-baseline.png",
+      "full_page_screenshot": "mobile-390x844-full.png"
     }
+  ],
+  "coverage": [
+    "semantic document structure",
+    "horizontal overflow",
+    "product-system switching",
+    "material selection and ARIA state",
+    "five-layer system explorer",
+    "sample dialog and required fields",
+    "Netlify form contract",
+    "safe preview form interception",
+    "mobile navigation",
+    "desktop language switching",
+    "hero fallback",
+    "complete reveal and scroll path",
+    "JavaScript and console error detection",
+    "viewport and full-page visual evidence"
   ]
 }
