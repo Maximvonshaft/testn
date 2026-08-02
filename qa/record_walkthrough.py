@@ -211,7 +211,7 @@ def record_mobile(browser: Browser, base_url: str) -> Path:
     qa_click(page, page.locator("[data-menu-toggle]"), after=700)
 
     qa_click(page, page.locator('[data-system="kitchen"]:visible').first)
-    qa_click(page, page.locator('[data-system="hospitality"]:visible').first)
+    qa_click(page, page.locator('[data-system="exterior"]:visible').first)
     qa_click(page, page.locator('[data-system="bathroom"]:visible').first)
 
     qa_click(page, page.locator('[data-material="Dune Rift"]'))
