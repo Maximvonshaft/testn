@@ -26,15 +26,10 @@ jobs:
           from pathlib import Path
           path = Path('app.js')
           source = path.read_text(encoding='utf-8')
-          old = """      const isNetlify = /\\.netlify\\.app$/.test(location.hostname) || document.documentElement.dataset.netlify === 'true';
-      if (!isNetlify) {
-        event.preventDefault();
-        status.textContent = 'This preview has no live form endpoint. Deploy the repository on Netlify to activate secure form delivery.';
-        status.dataset.state = 'warning';
-        emit('form-unavailable', { hostname: location.hostname });
-      }
-"""
-          new = """      const isUnsupportedPreview =
+          start = source.index("      const isNetlify = /\\.netlify\\.app$/")
+          end_marker = "      }\n    });\n  }\n\n  function bindReveal()"
+          end = source.index(end_marker, start)
+          replacement = """      const isUnsupportedPreview =
         location.protocol === 'file:' ||
         /^(localhost|127\\.0\\.0\\.1|\\[::1\\])$/.test(location.hostname) ||
         /\\.github\\.io$/.test(location.hostname);
@@ -45,10 +40,11 @@ jobs:
         status.dataset.state = 'warning';
         emit('form-unavailable', { hostname: location.hostname });
       }
-"""
-          if old not in source:
-              raise SystemExit('Form routing block not found')
-          path.write_text(source.replace(old, new, 1), encoding='utf-8')
+    });
+  }
+
+  function bindReveal()"""
+          path.write_text(source[:start] + replacement + source[end + len(end_marker):], encoding='utf-8')
           PY
           node --check app.js
           git config user.name "github-actions[bot]"
