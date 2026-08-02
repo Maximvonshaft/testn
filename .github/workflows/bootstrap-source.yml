@@ -49,6 +49,7 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 22.16.0
+          package-manager-cache: false
 
       - name: Generate and verify dependency lock
         shell: bash
