@@ -1,0 +1,52 @@
+{
+  "name": "aquastone-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.17.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "check": "astro check",
+    "preview": "astro preview --host 127.0.0.1 --port 4321",
+    "test": "pnpm test:static && pnpm test:unit",
+    "test:static": "node scripts/static-audit.mjs",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots",
+    "qa": "pnpm check && pnpm test && pnpm build && pnpm test:e2e",
+    "deploy": "wrangler deploy",
+    "studio": "pnpm --dir studio dev",
+    "studio:build": "pnpm --dir studio build",
+    "record:runtime": "node scripts/record-runtime.mjs"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "14.1.4",
+    "@astrojs/react": "6.0.1",
+    "@base-ui/react": "1.6.0",
+    "@react-three/drei": "10.7.7",
+    "@react-three/fiber": "9.6.1",
+    "@sanity/client": "7.25.0",
+    "astro": "7.1.4",
+    "motion": "12.42.2",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "tailwindcss": "4.3.3",
+    "three": "0.185.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.9",
+    "@axe-core/playwright": "4.12.1",
+    "@playwright/test": "1.62.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "24.3.0",
+    "@types/react": "19.2.8",
+    "@types/react-dom": "19.2.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10",
+    "wrangler": "4.114.0"
+  }
+}

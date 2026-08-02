@@ -1,0 +1,25 @@
+---
+import { projectImages } from '@/data/catalog';
+import type { SiteCopy } from '@/data/copy';
+interface Props { copy: SiteCopy; }
+const { copy } = Astro.props;
+---
+<section class="project-section" id="contact">
+  <div class="project-copy"><p class="eyebrow">{copy.project.eyebrow}</p><h2>{copy.project.title}</h2><p>{copy.project.body}</p><button type="button" class="button button--warm" data-open-lead>{copy.project.cta} →</button></div>
+  <div class="project-gallery">{projectImages.map((image,index)=><img src={image} loading="lazy" width="640" height="420" alt={index===0?'Contemporary AQUASTONE villa application':index===1?'AQUASTONE interior surface application':'AQUASTONE kitchen surface application'} />)}</div>
+</section>
+<section class="sample-cta">
+  <div class="sample-art"><img src="/assets/materials/calacatta-oro.webp" alt="Calacatta Oro material sample" width="180" height="180" loading="lazy" /></div>
+  <div><p class="eyebrow">{copy.sample.eyebrow}</p><h2>{copy.sample.title}</h2><p>{copy.sample.body}</p></div>
+  <button class="button button--warm" type="button" data-open-lead>{copy.actions.samples} →</button>
+</section>
+<style>
+.project-section{width:min(1540px,calc(100vw - 32px));margin:0 auto 18px;padding:clamp(36px,5vw,74px);display:grid;grid-template-columns:.7fr 1.6fr;gap:clamp(34px,6vw,86px);align-items:center;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.44)}
+.project-copy h2{max-width:500px;margin:0 0 20px;font:400 clamp(42px,4vw,68px)/.97 var(--font-serif);letter-spacing:-.045em}.project-copy>p:not(.eyebrow){max-width:480px;margin:0 0 28px;color:var(--muted);line-height:1.65}
+.project-gallery{display:grid;grid-template-columns:1.1fr .8fr .8fr;gap:8px}.project-gallery img{width:100%;height:300px;object-fit:cover;border-radius:12px}.project-gallery img:first-child{height:360px}
+.sample-cta{width:min(1440px,calc(100vw - 48px));margin:20px auto 54px;padding:24px 34px;display:grid;grid-template-columns:130px 1fr auto;gap:28px;align-items:center;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.45)}
+.sample-art{width:112px;height:112px;padding:12px;border-radius:12px;background:#e5ddd3;box-shadow:var(--shadow-sm)}.sample-art img{width:100%;height:100%;object-fit:cover;border-radius:5px;transform:perspective(200px) rotateY(-12deg)}
+.sample-cta h2{margin:0;font:400 clamp(32px,3vw,48px)/1 var(--font-serif);letter-spacing:-.04em}.sample-cta div>p:last-child{margin:8px 0 0;color:var(--muted)}
+@media(max-width:900px){.project-section{grid-template-columns:1fr}.project-gallery{grid-template-columns:1.2fr 1fr 1fr}.project-gallery img,.project-gallery img:first-child{height:260px}.sample-cta{grid-template-columns:100px 1fr}.sample-cta button{grid-column:1/-1;width:100%}}
+@media(max-width:640px){.project-section{width:calc(100vw - 24px);padding:34px 20px}.project-gallery{grid-template-columns:1.35fr 1fr;overflow:hidden}.project-gallery img,.project-gallery img:first-child{height:210px}.project-gallery img:last-child{display:none}.sample-cta{width:calc(100vw - 24px);grid-template-columns:82px 1fr;padding:18px;gap:16px}.sample-art{width:78px;height:78px;padding:8px}.sample-cta h2{font-size:32px}.sample-cta div>p:last-child{font-size:12px}.sample-cta .eyebrow{display:none}}
+</style>

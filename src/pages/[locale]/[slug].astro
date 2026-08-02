@@ -1,0 +1,23 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/PageHero.astro';
+import { locales, pageSlugs, type Locale, type PageSlug } from '@/data/catalog';
+import { getSiteCopy } from '@/lib/sanity';
+
+export const prerender = true;
+export function getStaticPaths() {
+  return locales.flatMap((locale) => pageSlugs.map((slug) => ({ params: { locale, slug }, props: { locale, slug } })));
+}
+interface Props { locale: Locale; slug: PageSlug; }
+const { locale, slug } = Astro.props;
+const copy = await getSiteCopy(locale);
+const page = copy.pages[slug];
+const title = `${page.title} — AQUASTONE`;
+const noindex = slug === 'thanks';
+---
+<BaseLayout locale={locale} copy={copy} title={title} description={page.intro} noindex={noindex}>
+  <PageHero eyebrow={page.eyebrow} title={page.title} intro={page.intro} />
+  <div class="page-sections">
+    {page.sections.map((section) => <article class="page-section-card"><h2>{section.title}</h2><p>{section.body}</p></article>)}
+  </div>
+</BaseLayout>

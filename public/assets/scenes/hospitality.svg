@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="Warm hospitality suite"><defs>
+<linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#efe6dc"/><stop offset=".45" stop-color="#bda48e"/><stop offset="1" stop-color="#8e7460"/></linearGradient>
+<linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#7d6657"/><stop offset="1" stop-color="#4e3e34"/></linearGradient>
+<linearGradient id="stone" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f3ece3"/><stop offset=".58" stop-color="#d6c4b2"/><stop offset="1" stop-color="#aa8e76"/></linearGradient>
+<linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5fbff" stop-opacity=".35"/><stop offset="1" stop-color="#9fb0b3" stop-opacity=".15"/></linearGradient>
+<radialGradient id="glow"><stop stop-color="#fff8e9" stop-opacity=".95"/><stop offset="1" stop-color="#fff8e9" stop-opacity="0"/></radialGradient>
+<pattern id="vein" width="310" height="220" patternUnits="userSpaceOnUse"><path d="M-30 170C80 90 180 230 350 45" fill="none" stroke="#735b49" stroke-opacity=".16" stroke-width="5"/><path d="M20 -30c80 105 190 50 250 260" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="3"/></pattern>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="22" stdDeviation="20" flood-color="#2b211b" flood-opacity=".27"/></filter>
+<filter id="soft"><feGaussianBlur stdDeviation="20"/></filter>
+</defs>
+<rect width="1600" height="1000" fill="url(#wall)"/><rect y="650" width="1600" height="350" fill="url(#floor)"/><rect width="1600" height="1000" fill="url(#vein)" opacity=".32"/>
+<ellipse cx="760" cy="100" rx="670" ry="330" fill="url(#glow)" filter="url(#soft)"/>
+<g opacity=".23" stroke="#5a4638"><path d="M0 650h1600"/><path d="M320 0v650M640 0v650M960 0v650M1280 0v650"/></g><g filter="url(#shadow)"><rect x="100" y="90" width="1400" height="550" rx="8" fill="#b39a83"/><rect x="180" y="150" width="620" height="420" fill="url(#vein)"/><rect x="920" y="150" width="470" height="420" fill="url(#glass)"/></g><g filter="url(#shadow)"><rect x="270" y="650" width="940" height="210" rx="24" fill="#d9cbbd"/><rect x="350" y="570" width="370" height="130" rx="20" fill="#eee6dd"/><rect x="740" y="570" width="370" height="130" rx="20" fill="#e7dacf"/></g><g fill="#8c6c51"><rect x="90" y="610" width="150" height="210" rx="14"/><rect x="1240" y="610" width="150" height="210" rx="14"/></g><ellipse cx="165" cy="570" rx="85" ry="45" fill="#2a2420"/><path d="M165 570V390" stroke="#2a2420" stroke-width="12"/></svg>

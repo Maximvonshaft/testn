@@ -1,0 +1,46 @@
+---
+import Icon from './Icon.astro';
+import { locales, type Locale } from '@/data/catalog';
+import type { SiteCopy } from '@/data/copy';
+import { alternateLocales, localePath } from '@/lib/i18n';
+interface Props { locale: Locale; copy: SiteCopy; currentPath: string; }
+const { locale, copy, currentPath } = Astro.props;
+const alternates = alternateLocales(currentPath);
+const nav = [
+  [copy.nav.collections, localePath(locale, 'collections')],
+  [copy.nav.inspiration, `${localePath(locale)}#systems`],
+  [copy.nav.technical, localePath(locale, 'technical')],
+  [copy.nav.sustainability, localePath(locale, 'sustainability')],
+  [copy.nav.about, localePath(locale, 'about')],
+] as const;
+---
+<header class="site-header" data-site-header data-scrolled="false">
+  <div class="header-inner">
+    <a class="brand" href={localePath(locale)} aria-label="AQUASTONE home">AQUASTONE</a>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      {nav.map(([label, href]) => <a href={href}>{label}</a>)}
+    </nav>
+    <div class="header-actions">
+      <details class="locale-menu">
+        <summary aria-label="Change language"><Icon name="globe" size={16} /><span>{locale}</span></summary>
+        <div class="locale-popover">
+          {alternates.map(({ locale: itemLocale, href }) => <a href={href} aria-current={itemLocale === locale ? 'page' : undefined}><span>{itemLocale.toUpperCase()}</span><span>{itemLocale === locale ? '✓' : ''}</span></a>)}
+        </div>
+      </details>
+      <button class="button button--warm" type="button" data-open-lead>{copy.actions.samples}</button>
+      <details class="mobile-menu">
+        <summary aria-label="Open navigation"><span class="menu-icon"><span></span></span></summary>
+        <div class="mobile-drawer">
+          <nav aria-label="Mobile navigation">{nav.map(([label, href]) => <a href={href}>{label}</a>)}</nav>
+          <div class="mobile-locales">{locales.map((itemLocale) => <a href={alternates.find((item) => item.locale === itemLocale)?.href} aria-current={itemLocale === locale ? 'page' : undefined}>{itemLocale}</a>)}</div>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+<script>
+  const header = document.querySelector('[data-site-header]');
+  const updateHeader = () => header?.setAttribute('data-scrolled', String(window.scrollY > 16));
+  updateHeader();
+  window.addEventListener('scroll', updateHeader, { passive: true });
+</script>

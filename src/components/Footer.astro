@@ -1,0 +1,18 @@
+---
+import type { Locale } from '@/data/catalog';
+import type { SiteCopy } from '@/data/copy';
+import { localePath } from '@/lib/i18n';
+interface Props { locale: Locale; copy: SiteCopy; }
+const { locale, copy } = Astro.props;
+---
+<footer class="site-footer">
+  <div><a class="brand" href={localePath(locale)}>AQUASTONE</a><p class="footer-tagline">{copy.footer.tagline}</p></div>
+  <nav class="footer-nav" aria-label="Footer navigation">
+    <a href={localePath(locale, 'collections')}>{copy.nav.collections}</a>
+    <a href={localePath(locale, 'systems')}>{copy.actions.allSystems}</a>
+    <a href={localePath(locale, 'technical')}>{copy.nav.technical}</a>
+    <a href={localePath(locale, 'sustainability')}>{copy.nav.sustainability}</a>
+    <a href={localePath(locale, 'privacy')}>{copy.footer.privacy}</a>
+  </nav>
+  <div class="footer-meta"><div>© {new Date().getFullYear()} AQUASTONE</div><div>{copy.footer.legal}</div></div>
+</footer>

@@ -1,0 +1,5 @@
+---
+interface Props { eyebrow: string; title: string; intro: string; }
+const { eyebrow, title, intro } = Astro.props;
+---
+<section class="page-hero"><div class="page-hero__grid"><div><p class="eyebrow">{eyebrow}</p><h1 class="display-title">{title}</h1></div><p class="page-hero__intro">{intro}</p></div></section>

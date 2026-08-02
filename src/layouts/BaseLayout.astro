@@ -1,0 +1,55 @@
+---
+import '@/styles/global.css';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import LeadDialog from '@/components/react/LeadDialog';
+import type { Locale } from '@/data/catalog';
+import type { SiteCopy } from '@/data/copy';
+import { alternateLocales } from '@/lib/i18n';
+interface Props { locale: Locale; copy: SiteCopy; title?: string; description?: string; noindex?: boolean; }
+const { locale, copy, title = copy.meta.title, description = copy.meta.description, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
+const alternates = alternateLocales(Astro.url.pathname);
+const siteName = 'AQUASTONE';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Brand',
+  name: siteName,
+  url: Astro.site?.toString() ?? Astro.url.origin,
+  description: copy.meta.description,
+};
+---
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f3f0eb" />
+    <meta name="description" content={description} />
+    <meta name="robots" content={noindex ? 'noindex,follow' : 'index,follow,max-image-preview:large'} />
+    <link rel="canonical" href={canonical} />
+    {alternates.map(({ locale: code, href }) => <link rel="alternate" hreflang={code === 'cnr' ? 'cnr-ME' : code} href={new URL(href, Astro.site ?? Astro.url.origin).toString()} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL('/en/', Astro.site ?? Astro.url.origin).toString()} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/assets/scenes/bathroom.svg', Astro.site ?? Astro.url.origin).toString()} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN && <script defer data-domain={import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN} src="https://plausible.io/js/script.js"></script>}
+    {import.meta.env.PUBLIC_TURNSTILE_SITE_KEY && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>}
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="site-shell">
+      <Header locale={locale} copy={copy} currentPath={Astro.url.pathname} />
+      <main id="main-content"><slot /></main>
+      <Footer locale={locale} copy={copy} />
+    </div>
+    <LeadDialog client:load locale={locale} copy={copy} turnstileSiteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY} />
+  </body>
+</html>
