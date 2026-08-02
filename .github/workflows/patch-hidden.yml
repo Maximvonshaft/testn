@@ -1,0 +1,42 @@
+name: Apply AQUASTONE CSS hardening
+
+on:
+  push:
+    branches:
+      - feat/aquastone-production-website
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/aquastone-production-website
+          fetch-depth: 0
+      - name: Preserve the native hidden contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('styles.css')
+          source = path.read_text(encoding='utf-8')
+          rule = '[hidden] { display: none !important; }\n'
+          if rule not in source:
+              marker = '* { box-sizing: border-box; }\n'
+              if marker not in source:
+                  raise SystemExit('CSS insertion marker not found')
+              source = source.replace(marker, marker + rule, 1)
+              path.write_text(source, encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add styles.css
+          git diff --cached --quiet && exit 0
+          git commit -m "fix: preserve hidden-state rendering contract"
+          git push origin HEAD:feat/aquastone-production-website
