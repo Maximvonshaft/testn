@@ -1,20 +1,21 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const localHost = /127\.0\.0\.1|localhost/;
+const runtimeErrors = new WeakMap<Page, string[]>();
 
 test.beforeEach(async ({ page }) => {
-  const consoleErrors: string[] = [];
+  const errors: string[] = [];
+  runtimeErrors.set(page, errors);
   page.on('console', (message) => {
-    if (message.type() === 'error' && !/WebGL|favicon|turnstile/i.test(message.text())) consoleErrors.push(message.text());
+    if (message.type() === 'error' && !/WebGL|favicon|turnstile/i.test(message.text())) errors.push(message.text());
   });
-  page.on('pageerror', (error) => consoleErrors.push(error.message));
+  page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/en/', { waitUntil: 'domcontentloaded' });
-  await page.evaluate((errors) => { (window as Window & { __qaConsoleErrors?: string[] }).__qaConsoleErrors = errors; }, consoleErrors);
 });
 
 test.afterEach(async ({ page }) => {
-  const errors = await page.evaluate(() => (window as Window & { __qaConsoleErrors?: string[] }).__qaConsoleErrors ?? []);
+  const errors = runtimeErrors.get(page) ?? [];
   expect(errors, `Runtime console/page errors: ${errors.join('\n')}`).toEqual([]);
 });
 
