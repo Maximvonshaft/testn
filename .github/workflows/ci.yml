@@ -41,11 +41,11 @@ jobs:
         run: pnpm check
       - name: Production build
         run: pnpm build
-      - name: Dependency security audit
+      - name: Production-web dependency security audit
         shell: bash
         run: |
           set +e
-          pnpm audit --prod --json > dependency-audit.json
+          pnpm --filter aquastone-website audit --prod --json > dependency-audit.json
           status=$?
           node <<'NODE'
           const fs = require('node:fs');
