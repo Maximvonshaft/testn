@@ -12,7 +12,7 @@ type BoundaryProps = { children: ReactNode; fallback: ReactNode };
 type BoundaryState = { failed: boolean };
 class WebGLBoundary extends Component<BoundaryProps, BoundaryState> {
   override state: BoundaryState = { failed: false };
-  static override getDerivedStateFromError(): BoundaryState { return { failed: true }; }
+  static getDerivedStateFromError(): BoundaryState { return { failed: true }; }
   override componentDidCatch(error: Error, info: ErrorInfo) { console.warn('3D fallback activated', error.message, info.componentStack); }
   override render() { return this.state.failed ? this.props.fallback : this.props.children; }
 }
