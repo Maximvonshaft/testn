@@ -235,8 +235,12 @@
     if (!form) return;
     form.addEventListener('submit', event => {
       if (!form.checkValidity()) return;
-      const isNetlify = /\.netlify\.app$/.test(location.hostname) || document.documentElement.dataset.netlify === 'true';
-      if (!isNetlify) {
+      const isUnsupportedPreview =
+        location.protocol === 'file:' ||
+        /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) ||
+        /\.github\.io$/.test(location.hostname);
+      const hasNetlifyContract = form.dataset.netlify === 'true';
+      if (!hasNetlifyContract || isUnsupportedPreview) {
         event.preventDefault();
         status.textContent = 'This preview has no live form endpoint. Deploy the repository on Netlify to activate secure form delivery.';
         status.dataset.state = 'warning';
