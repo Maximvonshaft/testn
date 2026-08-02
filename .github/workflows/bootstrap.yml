@@ -37,11 +37,12 @@ jobs:
           test -f app.js
           test -f .github/workflows/deploy-pages.yml
 
-      - name: Replace bootstrap payload with production source
+      - name: Materialize normal production source
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf .bootstrap .github/workflows/bootstrap.yml
+          rm -rf .bootstrap
+          rm -f .github/workflows/deploy-pages.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
