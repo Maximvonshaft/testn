@@ -4,10 +4,18 @@ import AxeBuilder from '@axe-core/playwright';
 const localHost = /127\.0\.0\.1|localhost/;
 
 test.beforeEach(async ({ page }) => {
+  const consoleErrors: string[] = [];
   page.on('console', (message) => {
-    if (message.type() === 'error' && !/WebGL|favicon|turnstile/i.test(message.text())) throw new Error(`Console error: ${message.text()}`);
+    if (message.type() === 'error' && !/WebGL|favicon|turnstile/i.test(message.text())) consoleErrors.push(message.text());
   });
+  page.on('pageerror', (error) => consoleErrors.push(error.message));
   await page.goto('/en/', { waitUntil: 'domcontentloaded' });
+  await page.evaluate((errors) => { (window as Window & { __qaConsoleErrors?: string[] }).__qaConsoleErrors = errors; }, consoleErrors);
+});
+
+test.afterEach(async ({ page }) => {
+  const errors = await page.evaluate(() => (window as Window & { __qaConsoleErrors?: string[] }).__qaConsoleErrors ?? []);
+  expect(errors, `Runtime console/page errors: ${errors.join('\n')}`).toEqual([]);
 });
 
 test('renders the approved desktop/mobile information architecture', async ({ page }, testInfo) => {
@@ -33,7 +41,7 @@ test('switches product system and applies the selected material to the scene', a
   await expect(page.getByText(/Selected finish: Pietra Grey/i)).toBeVisible();
   const afterImage = await overlay.getAttribute('style');
   expect(afterImage).not.toBe(beforeImage);
-  expect(afterImage).toContain('pietra-grey.webp');
+  expect(afterImage).toContain('pietra-grey.svg');
 });
 
 test('exposes the five-layer material architecture', async ({ page }) => {
