@@ -21,7 +21,7 @@ env:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -30,8 +30,17 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22.16.0
-          cache: pnpm
-      - name: Install locked dependencies
+          package-manager-cache: false
+      - name: Generate hardened candidate lock
+        run: pnpm install --lockfile-only
+      - name: Upload hardened candidate lock
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastone-hardened-lock
+          path: pnpm-lock.yaml
+          if-no-files-found: error
+          retention-days: 7
+      - name: Install hardened locked dependencies
         run: pnpm install --frozen-lockfile
       - name: Static production audit
         run: pnpm test:static
@@ -41,11 +50,13 @@ jobs:
         run: pnpm check
       - name: Production build
         run: pnpm build
-      - name: Production-web dependency security audit
+      - name: Sanity Studio build
+        run: pnpm --filter aquastone-studio build
+      - name: Full production dependency security audit
         shell: bash
         run: |
           set +e
-          pnpm --filter aquastone-website audit --prod --json > dependency-audit.json
+          pnpm audit --prod --json > dependency-audit.json
           status=$?
           node <<'NODE'
           const fs = require('node:fs');
@@ -77,9 +88,13 @@ jobs:
   browser-acceptance:
     needs: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: aquastone-hardened-lock
+          path: .
       - uses: pnpm/action-setup@v4
         with:
           version: 11.17.0
@@ -87,6 +102,7 @@ jobs:
         with:
           node-version: 22.16.0
           cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - name: Install cross-browser runtime
         run: pnpm exec playwright install --with-deps chromium firefox webkit
