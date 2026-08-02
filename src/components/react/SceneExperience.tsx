@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { materials, systems, type MaterialId, type SystemId } from '@/data/catalog';
+import { materials, systems, type MaterialId, type SystemId, type SystemVisual, type MaterialVisual } from '@/data/catalog';
 import type { SiteCopy } from '@/data/copy';
 import styles from './SceneExperience.module.css';
 
@@ -27,17 +27,20 @@ const benefitIcons = [
   <path key="5" d="M20 4C11 4 5 8 5 15c0 3 2 5 5 5 7 0 10-7 10-16Z M4 21c3-6 7-9 13-12"/>,
 ];
 
+const defaultSystem: SystemVisual = systems[0]!;
+const defaultMaterial: MaterialVisual = materials[0]!;
+
 export default function SceneExperience({ copy }: Props) {
   const reduceMotion = useReducedMotion();
   const [systemId, setSystemId] = useState<SystemId>('bathroom');
   const [materialId, setMaterialId] = useState<MaterialId>('bianco-lumen');
-  const system = useMemo(() => systems.find((item) => item.id === systemId) ?? systems[0], [systemId]);
-  const material = useMemo(() => materials.find((item) => item.id === materialId) ?? materials[0], [materialId]);
+  const system = useMemo<SystemVisual>(() => systems.find((item) => item.id === systemId) ?? defaultSystem, [systemId]);
+  const material = useMemo<MaterialVisual>(() => materials.find((item) => item.id === materialId) ?? defaultMaterial, [materialId]);
   const text = copy.systems[systemId];
 
   useEffect(() => {
     window.dispatchEvent(new CustomEvent('aquastone:selection', { detail: { system: systemId, material: material.name } }));
-  }, [systemId, materialId, material.name]);
+  }, [systemId, material.name]);
 
   const changeSystem = (id: SystemId) => setSystemId(id);
   const changeMaterial = (id: MaterialId) => setMaterialId(id);
