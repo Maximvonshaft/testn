@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - feat/aquastone-production-website
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -14,9 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout bootstrap commit
+      - name: Checkout bootstrap branch
         uses: actions/checkout@v4
         with:
+          ref: feat/aquastone-production-website
           fetch-depth: 0
 
       - name: Verify and extract source archive
@@ -42,4 +46,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "feat: materialize production AQUASTONE website"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          git push origin HEAD:feat/aquastone-production-website
