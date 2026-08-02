@@ -78,9 +78,7 @@ jobs:
           const fs = require('node:fs');
           const report = JSON.parse(fs.readFileSync('dependency-audit.json', 'utf8'));
           const advisories = Object.values(report.advisories || {});
-          for (const advisory of advisories) {
-            console.error(`${advisory.severity.toUpperCase()} ${advisory.module_name}: ${advisory.title} (${advisory.vulnerable_versions})`);
-          }
+          for (const advisory of advisories) console.error(`${advisory.severity.toUpperCase()} ${advisory.module_name}: ${advisory.title} (${advisory.vulnerable_versions})`);
           console.error(`Audit totals: ${JSON.stringify(report.metadata?.vulnerabilities || {})}`);
           NODE
           exit "$status"
@@ -103,8 +101,21 @@ jobs:
 
   browser-acceptance:
     needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - group: chromium
+            browser: chromium
+            projects: "--project=chromium --project=mobile-chrome"
+          - group: firefox
+            browser: firefox
+            projects: "--project=firefox"
+          - group: webkit
+            browser: webkit
+            projects: "--project=webkit --project=mobile-safari"
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 18
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -120,15 +131,16 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - name: Install cross-browser runtime
-        run: pnpm exec playwright install --with-deps chromium firefox webkit
-      - name: Run Chromium, Firefox, WebKit and mobile acceptance
-        run: pnpm test:e2e
-      - name: Upload browser evidence
+      - name: Install ${{ matrix.browser }} runtime
+        run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      - name: Run ${{ matrix.group }} acceptance
+        shell: bash
+        run: pnpm exec playwright test ${{ matrix.projects }}
+      - name: Upload ${{ matrix.group }} browser evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: aquastone-browser-acceptance
+          name: aquastone-browser-${{ matrix.group }}
           path: |
             playwright-report/
             test-results/
