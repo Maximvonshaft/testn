@@ -2,7 +2,7 @@ import { Component, type ErrorInfo, type ReactNode, useEffect, useMemo, useRef, 
 import { Canvas, useFrame } from '@react-three/fiber';
 import { ContactShadows, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
-import { materials, type MaterialId } from '@/data/catalog';
+import { materials, type MaterialId, type MaterialVisual } from '@/data/catalog';
 import type { SiteCopy } from '@/data/copy';
 import styles from './MaterialLayerViewer.module.css';
 
@@ -11,10 +11,10 @@ type Props = { copy: SiteCopy };
 type BoundaryProps = { children: ReactNode; fallback: ReactNode };
 type BoundaryState = { failed: boolean };
 class WebGLBoundary extends Component<BoundaryProps, BoundaryState> {
-  state: BoundaryState = { failed: false };
-  static getDerivedStateFromError(): BoundaryState { return { failed: true }; }
-  componentDidCatch(error: Error, info: ErrorInfo) { console.warn('3D fallback activated', error.message, info.componentStack); }
-  render() { return this.state.failed ? this.props.fallback : this.props.children; }
+  override state: BoundaryState = { failed: false };
+  static override getDerivedStateFromError(): BoundaryState { return { failed: true }; }
+  override componentDidCatch(error: Error, info: ErrorInfo) { console.warn('3D fallback activated', error.message, info.componentStack); }
+  override render() { return this.state.failed ? this.props.fallback : this.props.children; }
 }
 
 const layerSpecs = [
@@ -30,7 +30,7 @@ function LayerMesh({ layer, index, active, texture, selected }: {
   index: number;
   active: boolean;
   texture: THREE.Texture | null;
-  selected: (typeof materials)[number];
+  selected: MaterialVisual;
 }) {
   const ref = useRef<THREE.Mesh>(null);
   const baseY = layer.y;
@@ -60,7 +60,7 @@ function LayerMesh({ layer, index, active, texture, selected }: {
 }
 
 function Stack({ active, materialId }: { active: string; materialId: MaterialId }) {
-  const selected = materials.find((item) => item.id === materialId) ?? materials[0];
+  const selected: MaterialVisual = materials.find((item) => item.id === materialId) ?? materials[0]!;
   const texture = useMemo(() => {
     if (typeof document === 'undefined') return null;
     const canvas = document.createElement('canvas');
