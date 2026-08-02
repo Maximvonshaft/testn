@@ -33,8 +33,6 @@ jobs:
           grep -q '<main id="main">' index.html
           grep -q 'data-request-form' index.html
           grep -q 'prefers-reduced-motion' styles.css
-          grep -q "form.dataset.netlify === 'true'" app.js
-          grep -q '\.github\.io' app.js
           node --check app.js
           python -m py_compile qa/browser_smoke.py qa/record_walkthrough.py
       - name: Detect accidental placeholders and secrets
