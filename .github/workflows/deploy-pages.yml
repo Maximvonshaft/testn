@@ -38,7 +38,7 @@ jobs:
         run: |
           set -euo pipefail
           ! grep -RInE '(sk-[A-Za-z0-9_-]{20,}|BEGIN (RSA|OPENSSH|EC) PRIVATE KEY|TODO:|FIXME:|lorem ipsum)' \
-            --exclude-dir=.git --exclude-dir=qa-artifacts .
+            --exclude-dir=.git --exclude-dir=.github --exclude-dir=qa-artifacts .
 
   browser-qa:
     runs-on: ubuntu-latest
@@ -48,6 +48,7 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
+          cache-dependency-path: requirements-qa.txt
       - name: Install browser QA runtime
         run: |
           python -m pip install --upgrade pip
