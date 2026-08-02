@@ -39,9 +39,9 @@ const jsonLd = {
     <meta property="og:image" content={new URL('/assets/scenes/bathroom.svg', Astro.site ?? Astro.url.origin).toString()} />
     <meta name="twitter:card" content="summary_large_image" />
     <title>{title}</title>
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-    {import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN && <script defer data-domain={import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN} src="https://plausible.io/js/script.js"></script>}
-    {import.meta.env.PUBLIC_TURNSTILE_SITE_KEY && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>}
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN && <script is:inline defer data-domain={import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN} src="https://plausible.io/js/script.js"></script>}
+    {import.meta.env.PUBLIC_TURNSTILE_SITE_KEY && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>}
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
