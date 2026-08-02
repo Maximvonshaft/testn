@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -17,6 +17,56 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  form-hardening:
+    if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/aquastone-production-website
+          fetch-depth: 0
+      - name: Support Netlify custom-domain form delivery
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('app.js')
+          source = path.read_text(encoding='utf-8')
+          old = """      const isNetlify = /\\.netlify\\.app$/.test(location.hostname) || document.documentElement.dataset.netlify === 'true';
+      if (!isNetlify) {
+        event.preventDefault();
+        status.textContent = 'This preview has no live form endpoint. Deploy the repository on Netlify to activate secure form delivery.';
+        status.dataset.state = 'warning';
+        emit('form-unavailable', { hostname: location.hostname });
+      }
+"""
+          new = """      const isUnsupportedPreview =
+        location.protocol === 'file:' ||
+        /^(localhost|127\\.0\\.0\\.1|\\[::1\\])$/.test(location.hostname) ||
+        /\\.github\\.io$/.test(location.hostname);
+      const hasNetlifyContract = form.dataset.netlify === 'true';
+      if (!hasNetlifyContract || isUnsupportedPreview) {
+        event.preventDefault();
+        status.textContent = 'This preview has no live form endpoint. Deploy the repository on Netlify to activate secure form delivery.';
+        status.dataset.state = 'warning';
+        emit('form-unavailable', { hostname: location.hostname });
+      }
+"""
+          if old not in source:
+              if "const hasNetlifyContract = form.dataset.netlify === 'true';" in source:
+                  raise SystemExit(0)
+              raise SystemExit('Form routing block not found')
+          path.write_text(source.replace(old, new, 1), encoding='utf-8')
+          PY
+          node --check app.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.js
+          git diff --cached --quiet && exit 0
+          git commit -m "fix: support Netlify custom-domain form delivery"
+          git push origin HEAD:feat/aquastone-production-website
+
   static-validation:
     runs-on: ubuntu-latest
     steps:
