@@ -12,8 +12,8 @@ const client = projectId
       dataset,
       apiVersion: '2026-07-01',
       useCdn: !token,
-      token,
       perspective: token ? 'drafts' : 'published',
+      ...(token ? { token } : {}),
     })
   : null;
 
@@ -24,7 +24,6 @@ export async function getSiteCopy(locale: Locale): Promise<SiteCopy> {
     const result = await client.fetch<Partial<SiteCopy> | null>(
       `*[_type == "siteCopy" && locale == $locale][0]{...}`,
       { locale },
-      { cache: 'no-store' },
     );
     if (!result) return copy[locale];
     return {
