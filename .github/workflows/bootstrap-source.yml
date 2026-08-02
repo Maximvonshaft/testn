@@ -32,7 +32,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(find .bootstrap -maxdepth 1 -name 'chunk-*.bin' | wc -l)" -eq 8
+          test "$(find .bootstrap -maxdepth 1 -name 'chunk-*.bin' | wc -l)" -eq 10
           cat .bootstrap/chunk-*.bin > /tmp/aquastone-src.tgz
           echo "eb8c0524ed50af3f46925ac45e09d210ec457b0359decd988cb29f3904440d1d  /tmp/aquastone-src.tgz" | sha256sum -c -
           tar -tzf /tmp/aquastone-src.tgz >/dev/null
