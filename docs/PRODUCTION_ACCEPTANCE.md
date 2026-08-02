@@ -15,7 +15,8 @@ A release is eligible for merge and production deployment only when every code-c
 - axe accessibility assertions;
 - runtime JavaScript error and horizontal-overflow checks;
 - localized routing, language switching and metadata checks;
-- material, scene, layer and lead-dialog interaction checks.
+- material, scene, layer and lead-dialog interaction checks;
+- Sanity Studio build validation against the same hardened lock graph.
 
 ## Fail-closed production dependencies
 
