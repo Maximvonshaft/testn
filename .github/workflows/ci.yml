@@ -53,7 +53,21 @@ jobs:
       - name: Production build
         run: pnpm build
       - name: Sanity Studio build
-        run: pnpm --filter aquastone-studio build
+        shell: bash
+        run: |
+          set +e
+          pnpm --filter aquastone-studio build > studio-build.log 2>&1
+          status=$?
+          cat studio-build.log
+          exit "$status"
+      - name: Upload Studio build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastone-studio-build-log
+          path: studio-build.log
+          if-no-files-found: error
+          retention-days: 30
       - name: Full production dependency security audit
         shell: bash
         run: |
