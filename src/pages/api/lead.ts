@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { z } from 'astro/zod';
 import { leadSchema, publicLead } from '@/lib/lead';
 
 export const prerender = false;
@@ -82,7 +83,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   const parsed = leadSchema.safeParse(candidate);
   if (!parsed.success) {
-    return json(422, { ok: false, code: 'validation_failed', fields: parsed.error.flatten().fieldErrors });
+    return json(422, { ok: false, code: 'validation_failed', fields: z.flattenError(parsed.error).fieldErrors });
   }
 
   if (parsed.data.website) return json(202, { ok: true });
