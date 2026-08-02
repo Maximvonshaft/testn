@@ -4,7 +4,7 @@ import type { Locale } from '@/data/catalog';
 import type { SiteCopy } from '@/data/copy';
 import styles from './LeadDialog.module.css';
 
-type Props = { locale: Locale; copy: SiteCopy; turnstileSiteKey?: string };
+type Props = { locale: Locale; copy: SiteCopy; turnstileSiteKey?: string | undefined };
 type Selection = { system: string; material: string };
 type TurnstileApi = { render: (node: HTMLElement, options: { sitekey: string; callback: (token: string) => void; 'expired-callback': () => void; 'error-callback': () => void; theme: 'light' }) => string; reset: (id: string) => void };
 declare global { interface Window { turnstile?: TurnstileApi; } }
