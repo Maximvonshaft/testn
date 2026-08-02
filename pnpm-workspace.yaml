@@ -4,3 +4,8 @@ packages:
 allowBuilds:
   esbuild: true
   workerd: true
+overrides:
+  adm-zip: 0.6.0
+  js-yaml@3: 3.15.0
+  smol-toml: 1.6.1
+  uuid@10: 11.1.1
