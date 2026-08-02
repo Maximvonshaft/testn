@@ -14,7 +14,6 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    reducedMotion: 'no-preference',
   },
   webServer: {
     command: 'pnpm build && pnpm preview',
