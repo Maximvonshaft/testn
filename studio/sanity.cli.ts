@@ -1,2 +1,10 @@
 import { defineCliConfig } from 'sanity/cli';
-export default defineCliConfig({ api: { projectId: process.env.SANITY_STUDIO_PROJECT_ID || 'replace-me', dataset: process.env.SANITY_STUDIO_DATASET || 'production' } });
+
+const projectId = process.env.SANITY_STUDIO_PROJECT_ID;
+const dataset = process.env.SANITY_STUDIO_DATASET || 'production';
+
+if (!projectId) {
+  throw new Error('SANITY_STUDIO_PROJECT_ID is required for AQUASTONE Studio CLI operations.');
+}
+
+export default defineCliConfig({ api: { projectId, dataset } });
