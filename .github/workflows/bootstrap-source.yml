@@ -56,12 +56,22 @@ jobs:
         run: |
           set -euo pipefail
           cat >> pnpm-workspace.yaml <<'YAML'
-          onlyBuiltDependencies:
-            - esbuild
-            - workerd
+          allowBuilds:
+            esbuild: true
+            workerd: true
           YAML
-          pnpm install --lockfile-only --ignore-scripts
+          pnpm install --lockfile-only
           pnpm install --frozen-lockfile
+
+      - name: Commit normal production source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: migrate AQUASTONE to Astro production architecture"
+          git push origin HEAD:feat/aquastone-astro-production
 
       - name: Validate materialized production source
         shell: bash
@@ -74,13 +84,3 @@ jobs:
           pnpm test:unit
           pnpm check
           pnpm build
-
-      - name: Commit normal production source
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "feat: migrate AQUASTONE to Astro production architecture"
-          git push origin HEAD:feat/aquastone-astro-production
