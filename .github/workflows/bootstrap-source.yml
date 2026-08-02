@@ -1,0 +1,76 @@
+name: Materialize AQUASTONE Astro source
+
+on:
+  push:
+    branches:
+      - feat/aquastone-astro-production
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aquastone-astro-bootstrap
+  cancel-in-progress: true
+
+jobs:
+  materialize:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout source payload
+        uses: actions/checkout@v4
+        with:
+          ref: feat/aquastone-astro-production
+          fetch-depth: 0
+
+      - name: Reconstruct verified source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(find .bootstrap -maxdepth 1 -name 'chunk-*.bin' | wc -l)" -eq 8
+          cat .bootstrap/chunk-*.bin > /tmp/aquastone-src.tgz
+          echo "eb8c0524ed50af3f46925ac45e09d210ec457b0359decd988cb29f3904440d1d  /tmp/aquastone-src.tgz" | sha256sum -c -
+          tar -tzf /tmp/aquastone-src.tgz >/dev/null
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name .github -exec rm -rf {} +
+          tar -xzf /tmp/aquastone-src.tgz -C .
+          rm -rf .bootstrap
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.17.0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22.16.0
+
+      - name: Generate and verify dependency lock
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm install --lockfile-only --ignore-scripts
+          pnpm install --frozen-lockfile
+
+      - name: Validate materialized production source
+        shell: bash
+        env:
+          PUBLIC_SITE_URL: https://preview.aquastone.example
+          PUBLIC_SANITY_DATASET: production
+        run: |
+          set -euo pipefail
+          pnpm test:static
+          pnpm test:unit
+          pnpm check
+          pnpm build
+
+      - name: Commit normal production source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: migrate AQUASTONE to Astro production architecture"
+          git push origin HEAD:feat/aquastone-astro-production
