@@ -99,8 +99,24 @@ def exercise(page: Page, base_url: str, label: str) -> dict[str, object]:
 
     page.locator("[data-open-samples]:visible").first.click()
     dialog = page.locator("[data-samples-dialog]")
+    form = page.locator("[data-request-form]")
     assert_true(dialog.evaluate("element => element.open"), "Sample request dialog did not open")
-    assert_true(page.locator("[data-request-form] [required]").count() >= 6, "Required form fields are missing")
+    assert_true(form.locator("[required]").count() >= 6, "Required form fields are missing")
+    assert_true(form.get_attribute("data-netlify") == "true", "Netlify form contract is missing")
+
+    form.locator('[name="name"]').fill("AQUASTONE QA")
+    form.locator('[name="email"]').fill("qa@example.com")
+    form.locator('[name="country"]').fill("Switzerland")
+    form.locator('[name="projectType"]').select_option(label="Residential")
+    form.locator('[name="application"]').select_option(label="Bathrooms & wet areas")
+    form.locator('[name="privacy"]').check()
+    form.locator('button[type="submit"]').click()
+    assert_true(
+        "preview has no live form endpoint" in page.locator("[data-form-status]").inner_text().lower(),
+        "Preview form guard did not prevent an invalid local submission",
+    )
+    assert_true(dialog.evaluate("element => element.open"), "Preview submission unexpectedly navigated away")
+
     page.locator("[data-close-dialog]").first.click()
     assert_true(not dialog.evaluate("element => element.open"), "Sample request dialog did not close")
 
