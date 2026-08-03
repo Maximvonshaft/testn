@@ -9,7 +9,7 @@ const { copy } = Astro.props;
   <div class="project-gallery">{projectImages.map((image,index)=><img src={image} loading="lazy" width="640" height="420" alt={index===0?'Contemporary AQUASTONE villa application':index===1?'AQUASTONE interior surface application':'AQUASTONE kitchen surface application'} />)}</div>
 </section>
 <section class="sample-cta">
-  <div class="sample-art"><img src="/assets/materials/calacatta-oro.webp" alt="Calacatta Oro material sample" width="180" height="180" loading="lazy" /></div>
+  <div class="sample-art"><img src="/assets/materials/calacatta-oro.svg" alt="Calacatta Oro material sample" width="180" height="180" loading="lazy" /></div>
   <div><p class="eyebrow">{copy.sample.eyebrow}</p><h2>{copy.sample.title}</h2><p>{copy.sample.body}</p></div>
   <button class="button button--warm" type="button" data-open-lead>{copy.actions.samples} →</button>
 </section>
