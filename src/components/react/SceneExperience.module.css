@@ -39,6 +39,7 @@
 .materialName { display: block; font-size: 9px; font-weight: 680; line-height: 1.2; letter-spacing: .035em; text-transform: uppercase; text-align: center; }
 
 .benefits { width: calc(100% - 70px); margin: 14px auto 0; display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--line); border-radius: 15px; overflow: hidden; background: rgba(255,255,255,.34); }
+.benefits:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .benefit { min-height: 74px; display: grid; grid-template-columns: 26px 1fr; align-items: center; gap: 11px; padding: 14px 17px; border-right: 1px solid var(--line); }
 .benefit:last-child { border-right: 0; }
 .benefitIcon { width: 25px; height: 25px; }
