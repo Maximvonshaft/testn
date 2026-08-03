@@ -11,7 +11,7 @@ async function walk(path) {
   const entries = await readdir(path, { withFileTypes: true });
   const files = [];
   for (const entry of entries) {
-    if (['node_modules', '.git', 'dist', '.astro'].includes(entry.name)) continue;
+    if (['node_modules', '.git', 'dist', '.astro', '.wrangler', 'playwright-report', 'test-results', 'coverage', 'qa-artifacts', 'runtime-artifacts'].includes(entry.name)) continue;
     const full = join(path, entry.name);
     if (entry.isDirectory()) files.push(...await walk(full)); else files.push(full);
   }
@@ -23,7 +23,7 @@ const sourceFiles = files.filter((file) => ['.ts','.tsx','.astro','.css','.mjs',
 const source = (await Promise.all(sourceFiles.map((file) => readFile(file, 'utf8').then((content) => ({ file, content })))));
 const joined = source.map(({ content }) => content).join('\n');
 
-for (const required of ['package.json','astro.config.mjs','src/pages/[locale]/index.astro','src/pages/api/lead.ts','src/components/react/SceneExperience.tsx','src/components/react/MaterialLayerViewer.tsx','src/components/react/LeadDialog.tsx','wrangler.jsonc']) {
+for (const required of ['package.json','astro.config.mjs','src/pages/[locale]/index.astro','src/pages/api/lead.ts','src/components/react/SceneExperience.tsx','src/components/react/MaterialLayerViewer.tsx','src/components/react/LeadDialog.tsx','scripts/record-runtime.mjs','wrangler.jsonc']) {
   const exists = files.some((file) => relative(root.pathname, file) === required);
   exists ? pass(`required:${required}`) : fail(`required:${required}`, 'missing');
 }
