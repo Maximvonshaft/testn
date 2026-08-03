@@ -34,3 +34,43 @@ jobs:
             !dist/**
             !test-results/**
             !playwright-report/**
+
+  bundle-local-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.17.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22.16.0
+          cache: pnpm
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright browser binaries
+        run: pnpm exec playwright install chromium firefox webkit
+      - name: Prepare relocatable local runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .qa-runtime
+          cp -a "$HOME/.cache/ms-playwright" .qa-runtime/
+          git rev-parse HEAD > QA_SOURCE_COMMIT.txt
+          tar \
+            --exclude=.git \
+            --exclude=dist \
+            --exclude=test-results \
+            --exclude=playwright-report \
+            -czf /tmp/aquastone-local-runtime.tar.gz .
+      - name: Upload local runtime bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastone-local-runtime
+          retention-days: 3
+          if-no-files-found: error
+          compression-level: 0
+          path: /tmp/aquastone-local-runtime.tar.gz
