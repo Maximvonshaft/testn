@@ -1,0 +1,36 @@
+name: QA source export
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  export-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Record source identity
+        run: |
+          set -euo pipefail
+          git rev-parse HEAD > QA_SOURCE_COMMIT.txt
+          git status --short > QA_SOURCE_STATUS.txt
+      - name: Upload complete source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastone-source-snapshot
+          retention-days: 3
+          if-no-files-found: error
+          include-hidden-files: true
+          path: |
+            .
+            !.git/**
+            !node_modules/**
+            !dist/**
+            !test-results/**
+            !playwright-report/**
