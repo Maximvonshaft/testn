@@ -92,7 +92,7 @@ export default function SceneExperience({ copy }: Props) {
         </div>
       </div>
 
-      <div className={styles.benefits} aria-label="System benefits">
+      <div className={styles.benefits} role="region" tabIndex={0} aria-label="System benefits">
         {copy.benefits.map((benefit, index) => <div className={styles.benefit} key={benefit.title}><svg className={styles.benefitIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{benefitIcons[index]}</svg><span><strong className={styles.benefitTitle}>{benefit.title}</strong><small className={styles.benefitDetail}>{benefit.detail}</small></span></div>)}
       </div>
     </section>
