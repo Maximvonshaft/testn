@@ -1,0 +1,24 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SceneExperience from '@/components/react/SceneExperience';
+import MaterialLayerViewer from '@/components/react/MaterialLayerViewer';
+import SystemGrid from '@/components/SystemGrid.astro';
+import ProjectSection from '@/components/ProjectSection.astro';
+import DocumentStrip from '@/components/DocumentStrip.astro';
+import { locales, type Locale } from '@/data/catalog';
+import { getSiteCopy } from '@/lib/sanity';
+
+export const prerender = true;
+export function getStaticPaths() { return locales.map((locale) => ({ params: { locale }, props: { locale } })); }
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const copy = await getSiteCopy(locale);
+---
+<BaseLayout locale={locale} copy={copy}>
+  <SceneExperience client:load copy={copy} locale={locale} />
+  <MaterialLayerViewer client:visible copy={copy} />
+  <noscript><section class="section"><img src="/assets/materials/layer-system.svg" alt="Exploded five-layer AQUASTONE material system" /></section></noscript>
+  <SystemGrid locale={locale} copy={copy} />
+  <ProjectSection copy={copy} />
+  <DocumentStrip copy={copy} />
+</BaseLayout>

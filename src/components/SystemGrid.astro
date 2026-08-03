@@ -1,0 +1,37 @@
+---
+import { systems, type Locale } from '@/data/catalog';
+import type { SiteCopy } from '@/data/copy';
+import { localePath } from '@/lib/i18n';
+interface Props { locale: Locale; copy: SiteCopy; }
+const { locale, copy } = Astro.props;
+---
+<section class="systems-section" id="systems">
+  <div class="systems-heading">
+    <div><p class="eyebrow">{copy.portfolio.eyebrow}</p><h2 class="section-title">{copy.portfolio.title}</h2></div>
+    <a class="link-arrow" href={localePath(locale, 'systems')}>{copy.portfolio.viewAll}</a>
+  </div>
+  <div class="systems-grid">
+    {systems.map((system) => (
+      <article class="system-card">
+        <img src={system.cardImage} alt="" loading="lazy" width="500" height="620" />
+        <div class="system-card__shade"></div>
+        <div class="system-card__copy"><h3>{copy.systems[system.id].label}</h3><p>{copy.systems[system.id].cardDescription}</p><a aria-label={`${copy.actions.details}: ${copy.systems[system.id].label}`} href={localePath(locale, 'systems')}>→</a></div>
+      </article>
+    ))}
+  </div>
+</section>
+<style>
+  .systems-section{width:min(1540px,calc(100vw - 32px));margin:0 auto;padding:30px 0 clamp(70px,8vw,120px)}
+  .systems-heading{width:calc(100% - 70px);margin:0 auto 26px;display:flex;align-items:end;justify-content:space-between;gap:24px}
+  .systems-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.systems-grid::-webkit-scrollbar{display:none}
+  .system-card{position:relative;min-height:390px;overflow:hidden;border-radius:13px;scroll-snap-align:start;background:#8e7d70}
+  .system-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease),filter .5s ease;filter:saturate(.86)}
+  .system-card:hover img{transform:scale(1.035);filter:saturate(1)}
+  .system-card__shade{position:absolute;inset:0;background:linear-gradient(0deg,rgba(17,12,9,.7),transparent 65%)}
+  .system-card__copy{position:absolute;z-index:2;left:18px;right:16px;bottom:17px;color:white}
+  .system-card h3{max-width:170px;margin:0;font-size:12px;line-height:1.18;letter-spacing:.04em;text-transform:uppercase}
+  .system-card p{min-height:38px;margin:9px 28px 0 0;color:rgba(255,255,255,.72);font-size:9px;line-height:1.4}
+  .system-card a{position:absolute;right:0;bottom:0;width:28px;height:28px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.5);border-radius:50%}
+  @media(max-width:1100px){.systems-grid{grid-template-columns:repeat(6,240px)}.system-card{min-height:360px}.systems-heading{width:100%}}
+  @media(max-width:700px){.systems-section{width:100%;padding-top:12px}.systems-heading{width:calc(100% - 24px);align-items:start}.systems-heading .link-arrow{font-size:10px}.systems-grid{padding:0 12px;grid-template-columns:repeat(6,190px)}.system-card{min-height:286px}.system-card h3{font-size:10px}.system-card p{display:none}}
+</style>

@@ -1,0 +1,147 @@
+name: AQUASTONE production gates
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aquastone-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PUBLIC_SITE_URL: https://preview.aquastone.example
+  PUBLIC_SANITY_DATASET: production
+  SANITY_STUDIO_PROJECT_ID: ciaccept1
+  SANITY_STUDIO_DATASET: production
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.17.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22.16.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install committed production lock
+        run: pnpm install --frozen-lockfile
+      - name: Upload accepted dependency lock
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastone-hardened-lock
+          path: pnpm-lock.yaml
+          if-no-files-found: error
+          retention-days: 7
+      - name: Static production audit
+        run: pnpm test:static
+      - name: Unit tests
+        run: pnpm test:unit
+      - name: Astro and TypeScript checks
+        run: pnpm check
+      - name: Production build
+        run: pnpm build
+      - name: Sanity Studio build
+        shell: bash
+        run: |
+          set +e
+          pnpm --filter aquastone-studio build > studio-build.log 2>&1
+          status=$?
+          cat studio-build.log
+          exit "$status"
+      - name: Upload Studio build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastone-studio-build-log
+          path: studio-build.log
+          if-no-files-found: error
+          retention-days: 30
+      - name: Full production dependency security audit
+        shell: bash
+        run: |
+          set +e
+          pnpm audit --prod --json > dependency-audit.json
+          status=$?
+          node <<'NODE'
+          const fs = require('node:fs');
+          const report = JSON.parse(fs.readFileSync('dependency-audit.json', 'utf8'));
+          const advisories = Object.values(report.advisories || {});
+          for (const advisory of advisories) console.error(`${advisory.severity.toUpperCase()} ${advisory.module_name}: ${advisory.title} (${advisory.vulnerable_versions})`);
+          console.error(`Audit totals: ${JSON.stringify(report.metadata?.vulnerabilities || {})}`);
+          NODE
+          exit "$status"
+      - name: Upload dependency audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastone-dependency-audit
+          path: dependency-audit.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload production build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastone-production-build
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
+
+  browser-acceptance:
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - group: chromium
+            browser: chromium
+            projects: "--project=chromium --project=mobile-chrome"
+          - group: firefox
+            browser: firefox
+            projects: "--project=firefox"
+          - group: webkit
+            browser: webkit
+            projects: "--project=webkit --project=mobile-safari"
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: aquastone-hardened-lock
+          path: .
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.17.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22.16.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - name: Install ${{ matrix.browser }} runtime
+        run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
+      - name: Run ${{ matrix.group }} acceptance
+        shell: bash
+        run: pnpm exec playwright test ${{ matrix.projects }}
+      - name: Upload ${{ matrix.group }} browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastone-browser-${{ matrix.group }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: warn
+          retention-days: 30

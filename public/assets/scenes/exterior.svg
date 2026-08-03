@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="Modern mineral-clad villa"><defs>
+<linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#efe6dc"/><stop offset=".45" stop-color="#b7a18e"/><stop offset="1" stop-color="#8e7460"/></linearGradient>
+<linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#5c604e"/><stop offset="1" stop-color="#4e3e34"/></linearGradient>
+<linearGradient id="stone" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f3ece3"/><stop offset=".58" stop-color="#d6c4b2"/><stop offset="1" stop-color="#aa8e76"/></linearGradient>
+<linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5fbff" stop-opacity=".35"/><stop offset="1" stop-color="#9fb0b3" stop-opacity=".15"/></linearGradient>
+<radialGradient id="glow"><stop stop-color="#fff8e9" stop-opacity=".95"/><stop offset="1" stop-color="#fff8e9" stop-opacity="0"/></radialGradient>
+<pattern id="vein" width="310" height="220" patternUnits="userSpaceOnUse"><path d="M-30 170C80 90 180 230 350 45" fill="none" stroke="#735b49" stroke-opacity=".16" stroke-width="5"/><path d="M20 -30c80 105 190 50 250 260" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="3"/></pattern>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="22" stdDeviation="20" flood-color="#2b211b" flood-opacity=".27"/></filter>
+<filter id="soft"><feGaussianBlur stdDeviation="20"/></filter>
+</defs>
+<rect width="1600" height="1000" fill="url(#wall)"/><rect y="650" width="1600" height="350" fill="url(#floor)"/><rect width="1600" height="1000" fill="url(#vein)" opacity=".32"/>
+<ellipse cx="760" cy="100" rx="670" ry="330" fill="url(#glow)" filter="url(#soft)"/>
+<g opacity=".23" stroke="#5a4638"><path d="M0 650h1600"/><path d="M320 0v650M640 0v650M960 0v650M1280 0v650"/></g><rect width="1600" height="1000" fill="#b8ad9d"/><rect y="700" width="1600" height="300" fill="#474b3d"/><ellipse cx="1280" cy="210" rx="260" ry="180" fill="#ede0bf" opacity=".6"/><g filter="url(#shadow)"><path d="M180 670V240h640v430z" fill="url(#stone)"/><path d="M760 670V120h620v550z" fill="#9b8069"/><rect x="270" y="325" width="450" height="300" fill="url(#glass)"/><rect x="850" y="205" width="440" height="390" fill="url(#glass)"/><path d="M130 240h760l-90-85H220z" fill="#6e5948"/></g><rect x="0" y="720" width="1600" height="60" fill="#6c6755"/><g fill="#263126"><circle cx="100" cy="520" r="120"/><circle cx="1480" cy="510" r="150"/><circle cx="1360" cy="650" r="90"/></g></svg>

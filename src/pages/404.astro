@@ -1,0 +1,7 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { copy } from '@/data/copy';
+---
+<BaseLayout locale="en" copy={copy.en} title="Page not found — AQUASTONE" noindex>
+  <section class="error-page"><div><p class="eyebrow">404</p><h1>Not found.</h1><p class="body-copy">The requested page is not available.</p><a class="button button--warm" href="/en/">Return home</a></div></section>
+</BaseLayout>

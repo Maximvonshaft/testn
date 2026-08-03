@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="Custom mineral vanity and furniture"><defs>
+<linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#efe6dc"/><stop offset=".45" stop-color="#c7b09b"/><stop offset="1" stop-color="#8e7460"/></linearGradient>
+<linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8a715f"/><stop offset="1" stop-color="#4e3e34"/></linearGradient>
+<linearGradient id="stone" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f3ece3"/><stop offset=".58" stop-color="#d6c4b2"/><stop offset="1" stop-color="#aa8e76"/></linearGradient>
+<linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5fbff" stop-opacity=".35"/><stop offset="1" stop-color="#9fb0b3" stop-opacity=".15"/></linearGradient>
+<radialGradient id="glow"><stop stop-color="#fff8e9" stop-opacity=".95"/><stop offset="1" stop-color="#fff8e9" stop-opacity="0"/></radialGradient>
+<pattern id="vein" width="310" height="220" patternUnits="userSpaceOnUse"><path d="M-30 170C80 90 180 230 350 45" fill="none" stroke="#735b49" stroke-opacity=".16" stroke-width="5"/><path d="M20 -30c80 105 190 50 250 260" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="3"/></pattern>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="22" stdDeviation="20" flood-color="#2b211b" flood-opacity=".27"/></filter>
+<filter id="soft"><feGaussianBlur stdDeviation="20"/></filter>
+</defs>
+<rect width="1600" height="1000" fill="url(#wall)"/><rect y="650" width="1600" height="350" fill="url(#floor)"/><rect width="1600" height="1000" fill="url(#vein)" opacity=".32"/>
+<ellipse cx="760" cy="100" rx="670" ry="330" fill="url(#glow)" filter="url(#soft)"/>
+<g opacity=".23" stroke="#5a4638"><path d="M0 650h1600"/><path d="M320 0v650M640 0v650M960 0v650M1280 0v650"/></g><g filter="url(#shadow)"><rect x="180" y="150" width="800" height="300" rx="45" fill="#5a514b"/><rect x="205" y="175" width="750" height="250" rx="32" fill="url(#glass)"/><rect x="120" y="515" width="1040" height="150" rx="18" fill="url(#stone)"/><rect x="210" y="665" width="860" height="140" rx="12" fill="#a88e77"/></g><ellipse cx="560" cy="530" rx="170" ry="50" fill="#d8c6b4"/><path d="M560 530v-105h70v105" fill="none" stroke="#8e6745" stroke-width="18"/><g fill="#382f28"><circle cx="1310" cy="570" r="85"/><path d="M1310 570V300M1310 450l-110-120M1310 470l120-150" stroke="#382f28" stroke-width="17"/></g></svg>

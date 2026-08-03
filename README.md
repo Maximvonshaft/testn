@@ -1,101 +1,62 @@
-# AQUASTONE Website
+# AQUASTONE Production Website
 
-Production-oriented static brand website for AQUASTONE mineral composite surface systems.
+A production architecture for AQUASTONE mineral-composite surface systems, implemented from the approved desktop and mobile design baselines.
 
-The implementation follows the approved desktop and mobile design baseline and is intentionally dependency-light: semantic HTML, modern CSS and browser-native JavaScript. There is no framework runtime, package bundle or third-party script on the public page.
+## Architecture
 
-## Product scope
+- Astro 7 server output on Cloudflare Workers
+- React 19 islands for the scene configurator, lead dialog and 3D layer viewer
+- TypeScript strictest mode
+- Tailwind CSS 4 plus scoped CSS Modules
+- Base UI accessible dialog primitives
+- Motion for state and scene transitions
+- React Three Fiber / Three.js for the interactive five-layer system
+- Optional Sanity Content Lake and Studio with a verified local-content fallback
+- Server-validated lead delivery with Turnstile, idempotency and fail-closed routing
+- Playwright cross-browser acceptance, axe accessibility checks, Vitest and static integrity auditing
 
-- Desktop product-system rail and immersive hero scene
-- Mobile-first scene and material selection experience
-- Nine-finish 3D material selector
-- Interactive exploded material-system diagram
-- Six application-system cards
-- Project partnership and sample-request conversion flows
-- English, German and French interface switching
-- Accessible dialogs, keyboard interactions and live regions
-- Reduced-motion support
-- SEO metadata, Open Graph metadata, sitemap and robots rules
-- GitHub Pages preview deployment
-- Netlify production configuration with native form handling
-- Automated desktop and mobile Chromium acceptance checks
-
-## Repository structure
-
-```text
-.
-├── index.html
-├── styles.css
-├── app.js
-├── thanks.html
-├── 404.html
-├── site.webmanifest
-├── robots.txt
-├── sitemap.xml
-├── netlify.toml
-├── assets/
-│   ├── icons/
-│   │   ├── favicon.svg
-│   │   └── icons.svg
-│   └── images/
-│       └── bathroom-fallback.svg
-├── qa/
-│   └── browser_smoke.py
-├── docs/
-│   ├── QA.md
-│   ├── qa-results.json
-│   └── static-audit.json
-└── .github/workflows/deploy-pages.yml
-```
-
-## Local preview
+## Local development
 
 ```bash
-python -m http.server 4173
+corepack enable
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-Open `http://127.0.0.1:4173/`.
+The website is available at `http://127.0.0.1:4321/en/`.
 
-## Browser QA
+The pnpm workspace explicitly allows the required deterministic install scripts for `esbuild` and `workerd`; all other dependency build scripts remain denied by default.
+
+## Production gates
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements-qa.txt
-python -m playwright install chromium
-python qa/browser_smoke.py
+pnpm qa
 ```
 
-QA evidence is written to `qa-artifacts/`. The GitHub workflow runs the same acceptance checks before deployment.
+The command executes static integrity checks, unit tests, Astro/TypeScript checks, a production build and five Playwright projects: Chromium, Firefox, WebKit, Mobile Chrome and Mobile Safari.
+
+## Required production configuration
+
+The public lead flow deliberately fails closed until the following are configured in the deployment environment:
+
+- `PUBLIC_SITE_URL`
+- `PUBLIC_TURNSTILE_SITE_KEY`
+- `TURNSTILE_SECRET_KEY`
+- `LEAD_WEBHOOK_URL`
+- optional `LEAD_WEBHOOK_BEARER_TOKEN`
+
+Sanity is optional. Without Sanity variables, the versioned and fully localized content in `src/data/` is used. When enabled, configure:
+
+- `PUBLIC_SANITY_PROJECT_ID`
+- `PUBLIC_SANITY_DATASET`
+- optional `SANITY_API_READ_TOKEN` for draft preview
+
+## Content integrity
+
+The repository does not invent legal entities, certification numbers, report references, warranty, MOQ, lead time or commercial policy. Technical and environmental claims are published as product-specific status statements until verified source documents are loaded into the CMS.
 
 ## Deployment
 
-### GitHub Pages preview
+The production target is Cloudflare Workers. Set the GitHub environment variables and secrets described in `.github/workflows/deploy-cloudflare.yml`, then enable repository variable `PRODUCTION_DEPLOY_ENABLED=true`.
 
-The workflow deploys `main` after static validation and Chromium QA pass. Enable **Settings → Pages → Source: GitHub Actions** once for the repository.
-
-### Netlify production
-
-Connect the repository to Netlify with the repository root as the publish directory. `netlify.toml` provides security and caching headers. The sample-request form uses Netlify Forms and activates automatically during deployment.
-
-For another form backend, replace the form `action` and submission handling in `index.html` / `app.js` with the verified CRM or lead-routing endpoint.
-
-## Content and compliance boundary
-
-Company legal identity, addresses, contacts, certification numbers, report references, exact product performance values, warranty, MOQ, lead time and commercial policy are not invented in this repository. The documentation strip explicitly marks references as pending or product-specific until verified source documents are available.
-
-Before the public launch, insert only verified:
-
-- legal entity and privacy-controller details;
-- technical data sheets and declarations;
-- certification and test report references;
-- customer-facing contact and CRM routing;
-- product warranty and commercial terms.
-
-## Photography
-
-The production layout currently references fixed, free-use Pexels and Unsplash image CDN assets and includes a local SVG fallback for the primary hero. Replace the photography with owned AQUASTONE renders before long-term brand launch when the final product visual library is available.
-
-## Asset replacement
-
-Hero image URLs are centralized in `IMAGE_URLS` in `app.js`. Application cards and project-gallery images are defined in `index.html`. Keep equivalent aspect ratios and supply responsive, optimized WebP/AVIF assets when migrating to owned media.
+The deployment workflow will refuse to publish if the production domain, anti-abuse keys, lead endpoint or Cloudflare credentials are missing.
