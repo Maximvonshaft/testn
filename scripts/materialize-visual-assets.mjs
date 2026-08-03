@@ -6,15 +6,18 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const packedRoot = join(root, 'src', 'assets-packed');
 const manifest = JSON.parse(await readFile(join(packedRoot, 'manifest.json'), 'utf8'));
-const outputs = [
-  ['scene-grid-desktop.avif', join(root, 'public', 'assets', 'visual', 'scene-grid-desktop.avif')],
-  ['scene-grid-mobile.avif', join(root, 'public', 'assets', 'visual', 'scene-grid-mobile.avif')],
-  ['cards-atlas.avif', join(root, 'public', 'assets', 'visual', 'cards-atlas.avif')],
-  ['slab-atlas.avif', join(root, 'public', 'assets', 'visual', 'materials', 'slab-atlas.avif')],
-  ['og-default.webp', join(root, 'public', 'assets', 'visual', 'social', 'og-default.webp')],
-];
 
 let activeMaterialization;
+
+function outputPath(assetName) {
+  if (/^(bathroom|interior|kitchen|hospitality|furniture|exterior)-(desktop|mobile)\.avif$/.test(assetName)) {
+    return join(root, 'public', 'assets', 'visual', 'systems', assetName);
+  }
+  if (assetName === 'cards-atlas.avif') return join(root, 'public', 'assets', 'visual', assetName);
+  if (assetName === 'slab-atlas.avif') return join(root, 'public', 'assets', 'visual', 'materials', assetName);
+  if (assetName === 'og-default.webp') return join(root, 'public', 'assets', 'visual', 'social', assetName);
+  throw new Error(`Unknown packed visual asset: ${assetName}`);
+}
 
 async function sameBytes(path, bytes) {
   try {
@@ -42,21 +45,21 @@ function assertImageContainer(assetName, bytes) {
 
 async function materialize() {
   const names = await readdir(packedRoot);
-  for (const [assetName, outputPath] of outputs) {
+  for (const [assetName, expected] of Object.entries(manifest)) {
     const prefix = `${assetName}.b64.`;
     const parts = names.filter((name) => name.startsWith(prefix)).sort();
     if (!parts.length) throw new Error(`Packed visual asset is missing: ${assetName}`);
     const encoded = (await Promise.all(parts.map((part) => readFile(join(packedRoot, part), 'utf8')))).join('').replace(/\s+/g, '');
     const bytes = Buffer.from(encoded, 'base64');
     assertImageContainer(assetName, bytes);
-    const expected = manifest[assetName];
     const digest = createHash('sha256').update(bytes).digest('hex');
-    if (!expected || expected.bytes !== bytes.length || expected.sha256 !== digest) {
+    if (expected.bytes !== bytes.length || expected.sha256 !== digest) {
       throw new Error(`Packed visual asset integrity mismatch: ${assetName}`);
     }
-    if (await sameBytes(outputPath, bytes)) continue;
-    await mkdir(dirname(outputPath), { recursive: true });
-    await writeFile(outputPath, bytes);
+    const target = outputPath(assetName);
+    if (await sameBytes(target, bytes)) continue;
+    await mkdir(dirname(target), { recursive: true });
+    await writeFile(target, bytes);
   }
 }
 
