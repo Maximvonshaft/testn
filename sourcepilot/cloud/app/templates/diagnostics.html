@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Diagnostics</h1>
+<div class="panel"><table><tr><th>Time</th><th>Level</th><th>Stage</th><th>Message</th></tr>{% for l in logs %}<tr><td>{{l.created_at}}</td><td>{{l.level}}</td><td>{{l.stage}}</td><td>{{l.message}}</td></tr>{% endfor %}</table></div>
+{% endblock %}

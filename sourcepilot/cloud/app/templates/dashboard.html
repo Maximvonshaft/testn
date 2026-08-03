@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Commercial Sourcing Dashboard</h1>
+<p class="muted">From raw public lead exports to a clean, scored buyer database.</p>
+<div class="cards">
+  <div class="card"><span>Total leads</span><strong>{{ total }}</strong></div>
+  <div class="card"><span>A priority</span><strong>{{ a_count }}</strong></div>
+  <div class="card"><span>With website</span><strong>{{ with_website }}</strong></div>
+  <div class="card"><span>With phone</span><strong>{{ with_phone }}</strong></div>
+</div>
+<section class="panel"><h2>Recent campaigns</h2><table><tr><th>Name</th><th>Industry</th><th>Market</th><th>Status</th></tr>{% for c in campaigns %}<tr><td>{{ c.name }}</td><td>{{ c.industry }}</td><td>{{ c.market }}</td><td>{{ c.status }}</td></tr>{% endfor %}</table></section>
+<section class="panel"><h2>Recent logs</h2><table><tr><th>Time</th><th>Stage</th><th>Message</th></tr>{% for l in logs %}<tr><td>{{ l.created_at }}</td><td>{{ l.stage }}</td><td>{{ l.message }}</td></tr>{% endfor %}</table></section>
+{% endblock %}

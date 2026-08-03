@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Import complete</h1>
+<div class="panel"><p>File: {{ file }}</p><p>Imported: {{ result.imported }}</p><p>Created entities: {{ result.created }}</p><p>Merged observations: {{ result.merged }}</p><a href="/leads">Open Lead Inbox</a></div>
+{% endblock %}

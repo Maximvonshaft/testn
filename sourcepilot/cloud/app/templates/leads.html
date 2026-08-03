@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Lead Inbox</h1>
+<form class="toolbar" method="get"><input name="q" placeholder="Search name, website, address" value="{{q}}"><select name="priority"><option value="">All priorities</option><option {% if priority=='A' %}selected{% endif %}>A</option><option {% if priority=='B' %}selected{% endif %}>B</option><option {% if priority=='C' %}selected{% endif %}>C</option><option {% if priority=='D' %}selected{% endif %}>D</option></select><button>Filter</button></form>
+<div class="panel"><table><tr><th>Priority</th><th>Score</th><th>Name</th><th>Contact</th><th>Address</th><th>Status</th><th>Action</th></tr>{% for l in leads %}<tr><td><b>{{l.priority}}</b></td><td>{{l.lead_score}}</td><td>{{l.canonical_name}}<br><small>{{l.category}}</small></td><td>{% if l.website %}<a target="_blank" href="{{l.website}}">Website</a><br>{% endif %}{{l.phone}}<br>{{l.email}}</td><td>{{l.address}}</td><td>{{l.status}}</td><td><form method="post" action="/leads/{{l.id}}/status"><select name="status"><option>New</option><option>Qualified</option><option>Contacted</option><option>Not relevant</option></select><input name="notes" placeholder="notes"><button>Save</button></form></td></tr>{% endfor %}</table></div>
+{% endblock %}

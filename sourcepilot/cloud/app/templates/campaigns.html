@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Campaign Builder</h1>
+<div class="panel">
+<form method="post" action="/campaigns" class="gridform">
+<label>Campaign name<input name="name" placeholder="switzerland_building_materials_round_1"></label>
+<label>Industry<select name="industry">{% for k,v in playbooks.items() %}<option value="{{k}}">{{v.label}}</option>{% endfor %}</select></label>
+<label>Market<select name="market"><option>switzerland</option><option>germany</option><option>poland</option><option>ukraine</option><option>romania</option><option>balkans</option></select></label>
+<label>Max cities<input type="number" name="max_cities" value="2" min="1" max="20"></label>
+<label>Max keywords<input type="number" name="max_keywords" value="3" min="1" max="20"></label>
+<button>Create campaign and queries</button>
+</form>
+</div>
+<div class="panel"><h2>Campaigns</h2><table><tr><th>ID</th><th>Name</th><th>Industry</th><th>Market</th><th>Status</th><th>Queries</th></tr>{% for c in campaigns %}<tr><td>{{c.id}}</td><td>{{c.name}}</td><td>{{c.industry}}</td><td>{{c.market}}</td><td>{{c.status}}</td><td><a href="/campaigns/{{c.id}}/queries">View</a></td></tr>{% endfor %}</table></div>
+{% endblock %}
