@@ -1,8 +1,15 @@
 import { defineMiddleware } from 'astro:middleware';
 
+const framePolicy = "frame-ancestors 'none'";
+
 export const onRequest = defineMiddleware(async (context, next) => {
   const response = await next();
   const headers = new Headers(response.headers);
+  const existingCsp = headers.get('content-security-policy');
+
+  if (!existingCsp) headers.set('content-security-policy', framePolicy);
+  else if (!/\bframe-ancestors\b/i.test(existingCsp)) headers.set('content-security-policy', `${existingCsp}; ${framePolicy}`);
+
   headers.set('referrer-policy', 'strict-origin-when-cross-origin');
   headers.set('x-content-type-options', 'nosniff');
   headers.set('x-frame-options', 'DENY');
