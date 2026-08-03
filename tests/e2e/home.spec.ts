@@ -32,7 +32,12 @@ test('renders the approved desktop/mobile information architecture', async ({ pa
   await expect(page.locator('#systems article')).toHaveCount(6);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
-  await page.screenshot({ path: testInfo.outputPath('clean-runtime.png'), fullPage: true });
+  await page.screenshot({
+    path: testInfo.outputPath('clean-runtime.png'),
+    fullPage: true,
+    animations: 'allow',
+    caret: 'initial',
+  });
 });
 
 test('switches product system and applies the selected material to the scene', async ({ page }) => {
