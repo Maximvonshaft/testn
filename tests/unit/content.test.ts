@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { locales, materials, pageSlugs, systems } from '@/data/catalog';
+import { locales, materials, pageSlugs, sceneAtlasColumns, sceneAtlasRows, sceneStateAtlases, systems, systemCardAtlas } from '@/data/catalog';
 import { copy, getCopy } from '@/data/copy';
 import { leadSchema, publicLead } from '@/lib/lead';
 
@@ -7,8 +7,18 @@ describe('production catalog', () => {
   it('contains the complete system and finish portfolio', () => {
     expect(systems).toHaveLength(6);
     expect(materials).toHaveLength(9);
+    expect(sceneAtlasColumns).toBe(9);
+    expect(sceneAtlasRows).toBe(6);
     expect(new Set(systems.map((item) => item.id)).size).toBe(6);
     expect(new Set(materials.map((item) => item.id)).size).toBe(9);
+  });
+
+  it('maps every system and finish into deterministic global atlases', () => {
+    expect(sceneStateAtlases.desktop).toMatch(/scene-grid-desktop\.webp$/);
+    expect(sceneStateAtlases.mobile).toMatch(/scene-grid-mobile\.webp$/);
+    expect(systemCardAtlas).toMatch(/cards-atlas\.webp$/);
+    expect(systems.map((item) => item.atlasRow)).toEqual([0,1,2,3,4,5]);
+    expect(materials.map((item) => item.atlasIndex)).toEqual([0,1,2,3,4,5,6,7,8]);
   });
 
   it('provides complete localized content', () => {
