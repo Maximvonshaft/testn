@@ -32,18 +32,17 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22.16.0
-          package-manager-cache: false
-      - name: Generate hardened candidate lock
-        run: pnpm install --lockfile-only
-      - name: Upload hardened candidate lock
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install committed production lock
+        run: pnpm install --frozen-lockfile
+      - name: Upload accepted dependency lock
         uses: actions/upload-artifact@v4
         with:
           name: aquastone-hardened-lock
           path: pnpm-lock.yaml
           if-no-files-found: error
           retention-days: 7
-      - name: Install hardened locked dependencies
-        run: pnpm install --frozen-lockfile
       - name: Static production audit
         run: pnpm test:static
       - name: Unit tests
