@@ -14,9 +14,9 @@ describe('production catalog', () => {
   });
 
   it('maps every system and finish into deterministic global atlases', () => {
-    expect(sceneStateAtlases.desktop).toMatch(/scene-grid-desktop\.webp$/);
-    expect(sceneStateAtlases.mobile).toMatch(/scene-grid-mobile\.webp$/);
-    expect(systemCardAtlas).toMatch(/cards-atlas\.webp$/);
+    expect(sceneStateAtlases.desktop).toMatch(/scene-grid-desktop\.avif$/);
+    expect(sceneStateAtlases.mobile).toMatch(/scene-grid-mobile\.avif$/);
+    expect(systemCardAtlas).toMatch(/cards-atlas\.avif$/);
     expect(systems.map((item) => item.atlasRow)).toEqual([0,1,2,3,4,5]);
     expect(materials.map((item) => item.atlasIndex)).toEqual([0,1,2,3,4,5,6,7,8]);
   });
