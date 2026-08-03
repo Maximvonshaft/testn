@@ -1,19 +1,19 @@
 {
-  "scene-grid-desktop.webp": {
-    "bytes": 492038,
-    "sha256": "6b3ad17db0974bf67112178c7d635dc23d5f3f93959fea1d0363732551501bde"
+  "scene-grid-desktop.avif": {
+    "bytes": 357632,
+    "sha256": "dab240b50d15b8a8804a4e3be50902f03c23ea86321eeaa6ff4c0b2e6be78c55"
   },
-  "scene-grid-mobile.webp": {
-    "bytes": 193832,
-    "sha256": "91d04a4ec78d777e3ca5a3ee8b3e97619a8896c61f95948c7796f1d1b67d90b3"
+  "scene-grid-mobile.avif": {
+    "bytes": 110465,
+    "sha256": "185fb8f8ac5aeea3f493cc669377d6cecb503e2b2181f55a8af6878c31036c57"
   },
-  "cards-atlas.webp": {
-    "bytes": 111872,
-    "sha256": "c33daee7a6f6cfcf03525307edf3a831cbe1180d30af29ff2a8a6b7257752eb3"
+  "cards-atlas.avif": {
+    "bytes": 46388,
+    "sha256": "d1feb107509d2f418c53355214095a49d9259220c22b30569aede844e910ca37"
   },
-  "slab-atlas.webp": {
-    "bytes": 18122,
-    "sha256": "2ab671cdfc0378576238a71909e7cba53047cd0988ecdc99502e58f3104ec36d"
+  "slab-atlas.avif": {
+    "bytes": 8218,
+    "sha256": "e9682a6afe803f58fab1cf4955a931b70261ab0b6f826e6e38abe0209df54114"
   },
   "og-default.webp": {
     "bytes": 32338,
