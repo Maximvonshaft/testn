@@ -1,0 +1,53 @@
+{
+  "scene-grid-desktop.webp": {
+    "bytes": 492038,
+    "sha256": "6b3ad17db0974bf67112178c7d635dc23d5f3f93959fea1d0363732551501bde",
+    "parts": [
+      "scene-grid-desktop.webp.b64.000",
+      "scene-grid-desktop.webp.b64.001",
+      "scene-grid-desktop.webp.b64.002",
+      "scene-grid-desktop.webp.b64.003",
+      "scene-grid-desktop.webp.b64.004",
+      "scene-grid-desktop.webp.b64.005",
+      "scene-grid-desktop.webp.b64.006",
+      "scene-grid-desktop.webp.b64.007",
+      "scene-grid-desktop.webp.b64.008",
+      "scene-grid-desktop.webp.b64.009",
+      "scene-grid-desktop.webp.b64.010"
+    ]
+  },
+  "scene-grid-mobile.webp": {
+    "bytes": 193832,
+    "sha256": "91d04a4ec78d777e3ca5a3ee8b3e97619a8896c61f95948c7796f1d1b67d90b3",
+    "parts": [
+      "scene-grid-mobile.webp.b64.000",
+      "scene-grid-mobile.webp.b64.001",
+      "scene-grid-mobile.webp.b64.002",
+      "scene-grid-mobile.webp.b64.003",
+      "scene-grid-mobile.webp.b64.004"
+    ]
+  },
+  "cards-atlas.webp": {
+    "bytes": 111872,
+    "sha256": "c33daee7a6f6cfcf03525307edf3a831cbe1180d30af29ff2a8a6b7257752eb3",
+    "parts": [
+      "cards-atlas.webp.b64.000",
+      "cards-atlas.webp.b64.001",
+      "cards-atlas.webp.b64.002"
+    ]
+  },
+  "slab-atlas.webp": {
+    "bytes": 18122,
+    "sha256": "2ab671cdfc0378576238a71909e7cba53047cd0988ecdc99502e58f3104ec36d",
+    "parts": [
+      "slab-atlas.webp.b64.000"
+    ]
+  },
+  "og-default.webp": {
+    "bytes": 32338,
+    "sha256": "54efd5577fb233eff369e069800b149df85d589550393f94e1ae7cb41cc58882",
+    "parts": [
+      "og-default.webp.b64.000"
+    ]
+  }
+}
