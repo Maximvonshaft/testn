@@ -1,0 +1,78 @@
+{
+  "brand": "Material Studio",
+  "positioning": "Composite Surface Systems for Premium Interiors",
+  "productFamilies": [
+    {
+      "id": "wpc-slat-wall-panel",
+      "displayName": "WPC Slat Wall Panel",
+      "system": "Wall Surface System",
+      "catalogPages": [2],
+      "applications": ["bedroom", "hotel-suite", "retail", "office"],
+      "keyFeatures": ["fast-install", "decorative-ribbed-profile", "trim-compatible"],
+      "series": "Signature"
+    },
+    {
+      "id": "asa-outdoor-decking",
+      "displayName": "ASA Outdoor Decking",
+      "system": "Outdoor & Floor Surface System",
+      "catalogPages": [3],
+      "applications": ["outdoor", "hospitality"],
+      "keyFeatures": ["water-resistant", "anti-slip", "outdoor-durability", "fast-install"],
+      "series": "Outdoor"
+    },
+    {
+      "id": "door-wall-cabinet-system",
+      "displayName": "Door-Wall-Cabinet Matching System",
+      "system": "Seamless Interior Surface System",
+      "catalogPages": [4, 5],
+      "applications": ["bedroom", "hotel-suite", "office", "retail"],
+      "keyFeatures": ["same-color-integration", "hidden-door-process", "custom-surface"],
+      "series": "Signature"
+    },
+    {
+      "id": "bamboo-wood-fiber-wall-panel",
+      "displayName": "Bamboo Wood Fiber Wall Panel",
+      "system": "Interior Decorative Wall System",
+      "catalogPages": [6],
+      "applications": ["bedroom", "hotel-suite", "retail", "office"],
+      "keyFeatures": ["decorative-surface", "accessory-compatible", "quick-install"],
+      "series": "Core"
+    },
+    {
+      "id": "spc-stone-wall-panel",
+      "displayName": "SPC Stone Wall Panel",
+      "system": "Wet Area Stone Surface System",
+      "catalogPages": [7],
+      "applications": ["bathroom", "hotel-suite", "retail"],
+      "keyFeatures": ["waterproof", "stone-look", "easy-clean", "wet-area-compatible"],
+      "series": "Core"
+    },
+    {
+      "id": "pvc-marble-uv-board",
+      "displayName": "PVC Marble Sheet / UV Board",
+      "system": "Large Format Decorative Surface",
+      "catalogPages": [9],
+      "applications": ["bedroom", "hotel-suite", "bathroom", "retail"],
+      "keyFeatures": ["marble-look", "moisture-resistant", "multi-pattern", "flexible-surface"],
+      "series": "Signature"
+    },
+    {
+      "id": "pvc-ceiling-panel",
+      "displayName": "PVC Ceiling Panel",
+      "system": "Ceiling & Decorative Surface System",
+      "catalogPages": [10],
+      "applications": ["bathroom", "hotel-suite", "retail", "office"],
+      "keyFeatures": ["lightweight", "waterproof", "fire-resistant", "easy-install", "easy-clean"],
+      "series": "Core"
+    },
+    {
+      "id": "pvc-trim-accessories",
+      "displayName": "PVC Corner / Trim / Accessories",
+      "system": "Finishing & Trim System",
+      "catalogPages": [11],
+      "applications": ["bedroom", "bathroom", "hotel-suite", "retail", "outdoor"],
+      "keyFeatures": ["corner-trim", "edge-finish", "system-completion", "installation-detail"],
+      "series": "Core"
+    }
+  ]
+}
