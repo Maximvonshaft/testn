@@ -15,7 +15,9 @@ export type MaterialId =
 
 export interface SystemVisual {
   id: SystemId;
-  atlasRow: number;
+  desktopAtlas: string;
+  mobileAtlas: string;
+  cardAtlasIndex: number;
   focalPoint: string;
 }
 
@@ -32,23 +34,25 @@ export interface MaterialVisual {
 
 const visualRoot = '/assets/visual';
 
-export const sceneStateAtlases = {
-  desktop: `${visualRoot}/scene-grid-desktop.avif`,
-  mobile: `${visualRoot}/scene-grid-mobile.avif`,
-} as const;
+const systemVisual = (id: SystemId, cardAtlasIndex: number, focalPoint: string): SystemVisual => ({
+  id,
+  desktopAtlas: `${visualRoot}/systems/${id}-desktop.avif`,
+  mobileAtlas: `${visualRoot}/systems/${id}-mobile.avif`,
+  cardAtlasIndex,
+  focalPoint,
+});
 
 export const systemCardAtlas = `${visualRoot}/cards-atlas.avif`;
 export const materialSlabAtlas = `${visualRoot}/materials/slab-atlas.avif`;
 export const sceneAtlasColumns = 9 as const;
-export const sceneAtlasRows = 6 as const;
 
 export const systems: readonly SystemVisual[] = [
-  { id: 'bathroom', atlasRow: 0, focalPoint: '56% 50%' },
-  { id: 'interior', atlasRow: 1, focalPoint: '66% 50%' },
-  { id: 'kitchen', atlasRow: 2, focalPoint: '62% 50%' },
-  { id: 'hospitality', atlasRow: 3, focalPoint: '68% 50%' },
-  { id: 'furniture', atlasRow: 4, focalPoint: '64% 50%' },
-  { id: 'exterior', atlasRow: 5, focalPoint: '64% 50%' },
+  systemVisual('bathroom', 0, '56% 50%'),
+  systemVisual('interior', 1, '66% 50%'),
+  systemVisual('kitchen', 2, '62% 50%'),
+  systemVisual('hospitality', 3, '68% 50%'),
+  systemVisual('furniture', 4, '64% 50%'),
+  systemVisual('exterior', 5, '64% 50%'),
 ] as const;
 
 export const materials: readonly MaterialVisual[] = [
