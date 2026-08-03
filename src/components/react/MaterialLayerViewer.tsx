@@ -138,7 +138,7 @@ export default function MaterialLayerViewer({ copy }: Props) {
         </div>
         <div className={styles.notes}>{copy.technology.layers.map((layer) => <button key={layer.id} type="button" className={styles.note} data-active={active === layer.id} aria-pressed={active === layer.id} onClick={() => setActive(layer.id)}><strong className={styles.noteTitle}>{layer.title}</strong><span className={styles.noteBody}>{layer.body}</span></button>)}</div>
       </div>
-      <div className={styles.performance}>{copy.values.map((value, index) => <div className={styles.value} key={value.title}><span className={styles.valueIcon}>{String(index + 1).padStart(2,'0')}</span><strong>{value.title}</strong><span>{value.body}</span></div>)}</div>
+      <div className={styles.performance} role="region" tabIndex={0} aria-label={copy.technology.title}>{copy.values.map((value, index) => <div className={styles.value} key={value.title}><span className={styles.valueIcon}>{String(index + 1).padStart(2,'0')}</span><strong>{value.title}</strong><span>{value.body}</span></div>)}</div>
     </section>
   );
 }
