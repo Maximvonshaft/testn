@@ -32,12 +32,18 @@ test('renders the approved desktop/mobile information architecture', async ({ pa
   await expect(page.locator('#systems article')).toHaveCount(6);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
-  await page.screenshot({
-    path: testInfo.outputPath('clean-runtime.png'),
-    fullPage: true,
-    animations: 'allow',
-    caret: 'initial',
-  });
+
+  // WebKit's screenshot implementation injects a temporary stylesheet that a
+  // production CSP must reject. Visual evidence is captured in Chromium while
+  // WebKit and Firefox retain the same functional, runtime-error and axe gates.
+  if (testInfo.project.name === 'chromium' || testInfo.project.name === 'mobile-chrome') {
+    await page.screenshot({
+      path: testInfo.outputPath('clean-runtime.png'),
+      fullPage: true,
+      animations: 'allow',
+      caret: 'initial',
+    });
+  }
 });
 
 test('switches product system and applies the selected material to the scene', async ({ page }) => {
