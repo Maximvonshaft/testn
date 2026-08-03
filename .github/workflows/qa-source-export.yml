@@ -37,7 +37,7 @@ jobs:
 
   bundle-local-runtime:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
@@ -53,24 +53,50 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install Playwright browser binaries
         run: pnpm exec playwright install chromium firefox webkit
-      - name: Prepare relocatable local runtime
+      - name: Prepare split local runtime bundles
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p .qa-runtime
-          cp -a "$HOME/.cache/ms-playwright" .qa-runtime/
           git rev-parse HEAD > QA_SOURCE_COMMIT.txt
           tar \
             --exclude=.git \
             --exclude=dist \
             --exclude=test-results \
             --exclude=playwright-report \
-            -czf /tmp/aquastone-local-runtime.tar.gz .
-      - name: Upload local runtime bundle
+            -czf /tmp/aquastone-node-runtime.tar.gz .
+          cd "$HOME/.cache/ms-playwright"
+          tar -czf /tmp/aquastone-browser-chromium.tar.gz chromium-* chromium_headless_shell-* ffmpeg-* || true
+          tar -czf /tmp/aquastone-browser-firefox.tar.gz firefox-*
+          tar -czf /tmp/aquastone-browser-webkit.tar.gz webkit-*
+      - name: Upload node runtime
         uses: actions/upload-artifact@v4
         with:
-          name: aquastone-local-runtime
+          name: aquastone-node-runtime
           retention-days: 3
           if-no-files-found: error
           compression-level: 0
-          path: /tmp/aquastone-local-runtime.tar.gz
+          path: /tmp/aquastone-node-runtime.tar.gz
+      - name: Upload Chromium runtime
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastone-browser-chromium-runtime
+          retention-days: 3
+          if-no-files-found: error
+          compression-level: 0
+          path: /tmp/aquastone-browser-chromium.tar.gz
+      - name: Upload Firefox runtime
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastone-browser-firefox-runtime
+          retention-days: 3
+          if-no-files-found: error
+          compression-level: 0
+          path: /tmp/aquastone-browser-firefox.tar.gz
+      - name: Upload WebKit runtime
+        uses: actions/upload-artifact@v4
+        with:
+          name: aquastone-browser-webkit-runtime
+          retention-days: 3
+          if-no-files-found: error
+          compression-level: 0
+          path: /tmp/aquastone-browser-webkit.tar.gz
