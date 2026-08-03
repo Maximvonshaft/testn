@@ -1,9 +1,11 @@
 import { mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const packedRoot = join(root, 'src', 'assets-packed');
+const manifest = JSON.parse(await readFile(join(packedRoot, 'manifest.json'), 'utf8'));
 const outputs = [
   ['scene-grid-desktop.webp', join(root, 'public', 'assets', 'visual', 'scene-grid-desktop.webp')],
   ['scene-grid-mobile.webp', join(root, 'public', 'assets', 'visual', 'scene-grid-mobile.webp')],
@@ -35,6 +37,11 @@ async function materialize() {
     const bytes = Buffer.from(encoded, 'base64');
     if (bytes.length < 12 || bytes.subarray(0, 4).toString('ascii') !== 'RIFF' || bytes.subarray(8, 12).toString('ascii') !== 'WEBP') {
       throw new Error(`Packed visual asset is not a valid WebP: ${assetName}`);
+    }
+    const expected = manifest[assetName];
+    const digest = createHash('sha256').update(bytes).digest('hex');
+    if (!expected || expected.bytes !== bytes.length || expected.sha256 !== digest) {
+      throw new Error(`Packed visual asset integrity mismatch: ${assetName}`);
     }
     if (await sameBytes(outputPath, bytes)) continue;
     await mkdir(dirname(outputPath), { recursive: true });
