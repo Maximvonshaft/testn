@@ -1,0 +1,28 @@
+name: Cleanup hybrid asset workflows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/hybrid-visual-system-final]
+    paths: [.github/workflows/cleanup-hybrid-assets.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/hybrid-visual-system-final
+          fetch-depth: 0
+      - name: Remove one-time workflows
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm -f .github/workflows/materialize-hybrid-assets.yml .github/workflows/cleanup-hybrid-assets.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git commit -m "chore: remove one-time asset workflows"
+          git push origin HEAD:feat/hybrid-visual-system-final
