@@ -28,14 +28,13 @@ test('renders the approved desktop/mobile information architecture', async ({ pa
   await expect(page.locator('[data-scene-experience]')).toBeVisible();
   await expect(page.locator('[role="tab"][aria-selected="true"]')).toHaveCount(2);
   await expect(page.locator('[role="option"]')).toHaveCount(9);
+  await expect(page.locator('[data-scene-state]')).toHaveAttribute('data-scene-state', 'bathroom:bianco-lumen');
+  await expect(page.locator('[data-mask]')).toHaveCount(0);
   await expect(page.locator('#technology')).toBeVisible();
   await expect(page.locator('#systems article')).toHaveCount(6);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 
-  // WebKit's screenshot implementation injects a temporary stylesheet that a
-  // production CSP must reject. Visual evidence is captured in Chromium while
-  // WebKit and Firefox retain the same functional, runtime-error and axe gates.
   if (testInfo.project.name === 'chromium' || testInfo.project.name === 'mobile-chrome') {
     await page.screenshot({
       path: testInfo.outputPath('clean-runtime.png'),
@@ -46,17 +45,29 @@ test('renders the approved desktop/mobile information architecture', async ({ pa
   }
 });
 
-test('switches product system and applies the selected material to the scene', async ({ page }) => {
+test('switches complete scene states without runtime texture overlays', async ({ page }) => {
   const title = page.locator('h1');
-  const overlay = page.locator('[data-scene-experience] [data-mask]');
-  const beforeImage = await overlay.getAttribute('style');
+  const hero = page.locator('[data-scene-state]');
+  const beforeState = await hero.getAttribute('data-scene-state');
+
   await page.locator('[role="tab"]:visible').filter({ hasText: /Kitchen surfaces/i }).first().click();
   await expect(title).toContainText(/Performance/i);
+  await expect(hero).toHaveAttribute('data-scene-state', 'kitchen:bianco-lumen');
+  await expect(hero).toHaveAttribute('aria-busy', 'false');
+
   await page.locator('[role="option"]:visible').filter({ hasText: 'Pietra Grey' }).click();
   await expect(page.getByText(/Selected finish: Pietra Grey/i)).toBeVisible();
-  const afterImage = await overlay.getAttribute('style');
-  expect(afterImage).not.toBe(beforeImage);
-  expect(afterImage).toContain('pietra-grey.svg');
+  await expect(hero).toHaveAttribute('data-scene-state', 'kitchen:pietra-grey');
+  expect(await hero.getAttribute('data-scene-state')).not.toBe(beforeState);
+  await expect(page.locator('[data-mask]')).toHaveCount(0);
+});
+
+test('keeps material indices deterministic across system changes', async ({ page }) => {
+  const hero = page.locator('[data-scene-state]');
+  await page.locator('[role="option"]:visible').filter({ hasText: 'Calacatta Oro' }).click();
+  await expect(hero).toHaveAttribute('data-scene-state', 'bathroom:calacatta-oro');
+  await page.locator('[role="tab"]:visible').filter({ hasText: /Exterior cladding/i }).first().click();
+  await expect(hero).toHaveAttribute('data-scene-state', 'exterior:calacatta-oro');
 });
 
 test('exposes the five-layer material architecture', async ({ page }) => {
