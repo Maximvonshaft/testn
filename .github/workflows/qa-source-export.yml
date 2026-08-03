@@ -59,10 +59,10 @@ jobs:
           set -euo pipefail
           git rev-parse HEAD > QA_SOURCE_COMMIT.txt
           tar \
-            --exclude=.git \
-            --exclude=dist \
-            --exclude=test-results \
-            --exclude=playwright-report \
+            --exclude=./.git \
+            --exclude=./dist \
+            --exclude=./test-results \
+            --exclude=./playwright-report \
             -czf /tmp/aquastone-node-runtime.tar.gz .
           cd "$HOME/.cache/ms-playwright"
           tar -czf /tmp/aquastone-browser-chromium.tar.gz chromium-* chromium_headless_shell-* ffmpeg-* || true
