@@ -7,10 +7,10 @@ const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const packedRoot = join(root, 'src', 'assets-packed');
 const manifest = JSON.parse(await readFile(join(packedRoot, 'manifest.json'), 'utf8'));
 const outputs = [
-  ['scene-grid-desktop.webp', join(root, 'public', 'assets', 'visual', 'scene-grid-desktop.webp')],
-  ['scene-grid-mobile.webp', join(root, 'public', 'assets', 'visual', 'scene-grid-mobile.webp')],
-  ['cards-atlas.webp', join(root, 'public', 'assets', 'visual', 'cards-atlas.webp')],
-  ['slab-atlas.webp', join(root, 'public', 'assets', 'visual', 'materials', 'slab-atlas.webp')],
+  ['scene-grid-desktop.avif', join(root, 'public', 'assets', 'visual', 'scene-grid-desktop.avif')],
+  ['scene-grid-mobile.avif', join(root, 'public', 'assets', 'visual', 'scene-grid-mobile.avif')],
+  ['cards-atlas.avif', join(root, 'public', 'assets', 'visual', 'cards-atlas.avif')],
+  ['slab-atlas.avif', join(root, 'public', 'assets', 'visual', 'materials', 'slab-atlas.avif')],
   ['og-default.webp', join(root, 'public', 'assets', 'visual', 'social', 'og-default.webp')],
 ];
 
@@ -27,6 +27,19 @@ async function sameBytes(path, bytes) {
   }
 }
 
+function assertImageContainer(assetName, bytes) {
+  if (bytes.length < 12) throw new Error(`Packed visual asset is truncated: ${assetName}`);
+  if (assetName.endsWith('.webp')) {
+    if (bytes.subarray(0, 4).toString('ascii') !== 'RIFF' || bytes.subarray(8, 12).toString('ascii') !== 'WEBP') {
+      throw new Error(`Packed visual asset is not a valid WebP: ${assetName}`);
+    }
+    return;
+  }
+  if (assetName.endsWith('.avif') && bytes.subarray(4, 12).toString('ascii') !== 'ftypavif') {
+    throw new Error(`Packed visual asset is not a valid AVIF: ${assetName}`);
+  }
+}
+
 async function materialize() {
   const names = await readdir(packedRoot);
   for (const [assetName, outputPath] of outputs) {
@@ -35,9 +48,7 @@ async function materialize() {
     if (!parts.length) throw new Error(`Packed visual asset is missing: ${assetName}`);
     const encoded = (await Promise.all(parts.map((part) => readFile(join(packedRoot, part), 'utf8')))).join('').replace(/\s+/g, '');
     const bytes = Buffer.from(encoded, 'base64');
-    if (bytes.length < 12 || bytes.subarray(0, 4).toString('ascii') !== 'RIFF' || bytes.subarray(8, 12).toString('ascii') !== 'WEBP') {
-      throw new Error(`Packed visual asset is not a valid WebP: ${assetName}`);
-    }
+    assertImageContainer(assetName, bytes);
     const expected = manifest[assetName];
     const digest = createHash('sha256').update(bytes).digest('hex');
     if (!expected || expected.bytes !== bytes.length || expected.sha256 !== digest) {
