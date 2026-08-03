@@ -2,6 +2,9 @@ import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
+import { materializeVisualAssets } from './scripts/materialize-visual-assets.mjs';
+
+await materializeVisualAssets();
 
 const site = process.env.PUBLIC_SITE_URL || 'https://www.aquastone.example';
 
