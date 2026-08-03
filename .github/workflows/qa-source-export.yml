@@ -8,40 +8,11 @@ permissions:
   contents: read
 
 jobs:
-  export-source:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+  export-webkit-compatibility-libs:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-      - name: Record source identity
-        run: |
-          set -euo pipefail
-          git rev-parse HEAD > QA_SOURCE_COMMIT.txt
-          git status --short > QA_SOURCE_STATUS.txt
-      - name: Upload complete source snapshot
-        uses: actions/upload-artifact@v4
-        with:
-          name: aquastone-source-snapshot
-          retention-days: 3
-          if-no-files-found: error
-          include-hidden-files: true
-          path: |
-            .
-            !.git/**
-            !node_modules/**
-            !dist/**
-            !test-results/**
-            !playwright-report/**
-
-  bundle-local-runtime:
-    runs-on: ubuntu-latest
-    timeout-minutes: 35
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
       - uses: pnpm/action-setup@v4
         with:
           version: 11.17.0
@@ -49,54 +20,46 @@ jobs:
         with:
           node-version: 22.16.0
           cache: pnpm
-      - name: Install locked dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Install Playwright browser binaries
-        run: pnpm exec playwright install chromium firefox webkit
-      - name: Prepare split local runtime bundles
+      - run: pnpm install --frozen-lockfile
+      - name: Install WebKit system dependencies
+        run: pnpm exec playwright install --with-deps webkit
+      - name: Collect exact Ubuntu runtime libraries missing from the isolated Debian QA host
         shell: bash
         run: |
           set -euo pipefail
-          git rev-parse HEAD > QA_SOURCE_COMMIT.txt
-          tar \
-            --exclude=./.git \
-            --exclude=./dist \
-            --exclude=./test-results \
-            --exclude=./playwright-report \
-            -czf /tmp/aquastone-node-runtime.tar.gz .
-          cd "$HOME/.cache/ms-playwright"
-          tar -czf /tmp/aquastone-browser-chromium.tar.gz chromium-* chromium_headless_shell-* ffmpeg-* || true
-          tar -czf /tmp/aquastone-browser-firefox.tar.gz firefox-*
-          tar -czf /tmp/aquastone-browser-webkit.tar.gz webkit-*
-      - name: Upload node runtime
-        uses: actions/upload-artifact@v4
+          mkdir -p /tmp/webkit-compat/lib
+          patterns=(
+            'libgtk-4.so.1*'
+            'libgraphene-1.0.so.0*'
+            'libicudata.so.74*'
+            'libicui18n.so.74*'
+            'libicuuc.so.74*'
+            'libjpeg.so.8*'
+            'libmanette-0.2.so.0*'
+            'libsecret-1.so.0*'
+            'libGLESv2.so.2*'
+          )
+          for pattern in "${patterns[@]}"; do
+            found=0
+            while IFS= read -r -d '' file; do
+              cp -L "$file" "/tmp/webkit-compat/lib/$(basename "$file")"
+              found=1
+            done < <(find /usr/lib /lib -type f -o -type l 2>/dev/null | grep -zE "/${pattern//./\.}$" || true)
+            if [[ "$found" == 0 ]]; then
+              while IFS= read -r file; do
+                [[ -n "$file" ]] || continue
+                cp -L "$file" "/tmp/webkit-compat/lib/$(basename "$file")"
+                found=1
+              done < <(find /usr/lib /lib -name "$pattern" -print 2>/dev/null)
+            fi
+            [[ "$found" == 1 ]] || { echo "Missing expected pattern: $pattern" >&2; exit 1; }
+          done
+          (cd /tmp/webkit-compat/lib && sha256sum * | sort) > /tmp/webkit-compat/SHA256SUMS
+          tar -C /tmp/webkit-compat -czf /tmp/aquastone-webkit-compat-libs.tar.gz .
+      - uses: actions/upload-artifact@v4
         with:
-          name: aquastone-node-runtime
+          name: aquastone-webkit-compat-libs
           retention-days: 3
           if-no-files-found: error
           compression-level: 0
-          path: /tmp/aquastone-node-runtime.tar.gz
-      - name: Upload Chromium runtime
-        uses: actions/upload-artifact@v4
-        with:
-          name: aquastone-browser-chromium-runtime
-          retention-days: 3
-          if-no-files-found: error
-          compression-level: 0
-          path: /tmp/aquastone-browser-chromium.tar.gz
-      - name: Upload Firefox runtime
-        uses: actions/upload-artifact@v4
-        with:
-          name: aquastone-browser-firefox-runtime
-          retention-days: 3
-          if-no-files-found: error
-          compression-level: 0
-          path: /tmp/aquastone-browser-firefox.tar.gz
-      - name: Upload WebKit runtime
-        uses: actions/upload-artifact@v4
-        with:
-          name: aquastone-browser-webkit-runtime
-          retention-days: 3
-          if-no-files-found: error
-          compression-level: 0
-          path: /tmp/aquastone-browser-webkit.tar.gz
+          path: /tmp/aquastone-webkit-compat-libs.tar.gz
