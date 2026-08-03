@@ -30,7 +30,62 @@
       "scene-grid-desktop.webp.b64.024",
       "scene-grid-desktop.webp.b64.025",
       "scene-grid-desktop.webp.b64.026",
-      "scene-grid-desktop.webp.b64.027"
+      "scene-grid-desktop.webp.b64.027",
+      "scene-grid-desktop.webp.b64.028",
+      "scene-grid-desktop.webp.b64.029",
+      "scene-grid-desktop.webp.b64.030",
+      "scene-grid-desktop.webp.b64.031",
+      "scene-grid-desktop.webp.b64.032",
+      "scene-grid-desktop.webp.b64.033",
+      "scene-grid-desktop.webp.b64.034",
+      "scene-grid-desktop.webp.b64.035",
+      "scene-grid-desktop.webp.b64.036",
+      "scene-grid-desktop.webp.b64.037",
+      "scene-grid-desktop.webp.b64.038",
+      "scene-grid-desktop.webp.b64.039",
+      "scene-grid-desktop.webp.b64.040",
+      "scene-grid-desktop.webp.b64.041",
+      "scene-grid-desktop.webp.b64.042",
+      "scene-grid-desktop.webp.b64.043",
+      "scene-grid-desktop.webp.b64.044",
+      "scene-grid-desktop.webp.b64.045",
+      "scene-grid-desktop.webp.b64.046",
+      "scene-grid-desktop.webp.b64.047",
+      "scene-grid-desktop.webp.b64.048",
+      "scene-grid-desktop.webp.b64.049",
+      "scene-grid-desktop.webp.b64.050",
+      "scene-grid-desktop.webp.b64.051",
+      "scene-grid-desktop.webp.b64.052",
+      "scene-grid-desktop.webp.b64.053",
+      "scene-grid-desktop.webp.b64.054",
+      "scene-grid-desktop.webp.b64.055",
+      "scene-grid-desktop.webp.b64.056",
+      "scene-grid-desktop.webp.b64.057",
+      "scene-grid-desktop.webp.b64.058",
+      "scene-grid-desktop.webp.b64.059",
+      "scene-grid-desktop.webp.b64.060",
+      "scene-grid-desktop.webp.b64.061",
+      "scene-grid-desktop.webp.b64.062",
+      "scene-grid-desktop.webp.b64.063",
+      "scene-grid-desktop.webp.b64.064",
+      "scene-grid-desktop.webp.b64.065",
+      "scene-grid-desktop.webp.b64.066",
+      "scene-grid-desktop.webp.b64.067",
+      "scene-grid-desktop.webp.b64.068",
+      "scene-grid-desktop.webp.b64.069",
+      "scene-grid-desktop.webp.b64.070",
+      "scene-grid-desktop.webp.b64.071",
+      "scene-grid-desktop.webp.b64.072",
+      "scene-grid-desktop.webp.b64.073",
+      "scene-grid-desktop.webp.b64.074",
+      "scene-grid-desktop.webp.b64.075",
+      "scene-grid-desktop.webp.b64.076",
+      "scene-grid-desktop.webp.b64.077",
+      "scene-grid-desktop.webp.b64.078",
+      "scene-grid-desktop.webp.b64.079",
+      "scene-grid-desktop.webp.b64.080",
+      "scene-grid-desktop.webp.b64.081",
+      "scene-grid-desktop.webp.b64.082"
     ]
   },
   "scene-grid-mobile.webp": {
@@ -47,7 +102,29 @@
       "scene-grid-mobile.webp.b64.007",
       "scene-grid-mobile.webp.b64.008",
       "scene-grid-mobile.webp.b64.009",
-      "scene-grid-mobile.webp.b64.010"
+      "scene-grid-mobile.webp.b64.010",
+      "scene-grid-mobile.webp.b64.011",
+      "scene-grid-mobile.webp.b64.012",
+      "scene-grid-mobile.webp.b64.013",
+      "scene-grid-mobile.webp.b64.014",
+      "scene-grid-mobile.webp.b64.015",
+      "scene-grid-mobile.webp.b64.016",
+      "scene-grid-mobile.webp.b64.017",
+      "scene-grid-mobile.webp.b64.018",
+      "scene-grid-mobile.webp.b64.019",
+      "scene-grid-mobile.webp.b64.020",
+      "scene-grid-mobile.webp.b64.021",
+      "scene-grid-mobile.webp.b64.022",
+      "scene-grid-mobile.webp.b64.023",
+      "scene-grid-mobile.webp.b64.024",
+      "scene-grid-mobile.webp.b64.025",
+      "scene-grid-mobile.webp.b64.026",
+      "scene-grid-mobile.webp.b64.027",
+      "scene-grid-mobile.webp.b64.028",
+      "scene-grid-mobile.webp.b64.029",
+      "scene-grid-mobile.webp.b64.030",
+      "scene-grid-mobile.webp.b64.031",
+      "scene-grid-mobile.webp.b64.032"
     ]
   },
   "cards-atlas.webp": {
@@ -60,7 +137,19 @@
       "cards-atlas.webp.b64.003",
       "cards-atlas.webp.b64.004",
       "cards-atlas.webp.b64.005",
-      "cards-atlas.webp.b64.006"
+      "cards-atlas.webp.b64.006",
+      "cards-atlas.webp.b64.007",
+      "cards-atlas.webp.b64.008",
+      "cards-atlas.webp.b64.009",
+      "cards-atlas.webp.b64.010",
+      "cards-atlas.webp.b64.011",
+      "cards-atlas.webp.b64.012",
+      "cards-atlas.webp.b64.013",
+      "cards-atlas.webp.b64.014",
+      "cards-atlas.webp.b64.015",
+      "cards-atlas.webp.b64.016",
+      "cards-atlas.webp.b64.017",
+      "cards-atlas.webp.b64.018"
     ]
   },
   "slab-atlas.webp": {
@@ -68,7 +157,9 @@
     "sha256": "2ab671cdfc0378576238a71909e7cba53047cd0988ecdc99502e58f3104ec36d",
     "parts": [
       "slab-atlas.webp.b64.000",
-      "slab-atlas.webp.b64.001"
+      "slab-atlas.webp.b64.001",
+      "slab-atlas.webp.b64.002",
+      "slab-atlas.webp.b64.003"
     ]
   },
   "og-default.webp": {
@@ -76,7 +167,11 @@
     "sha256": "54efd5577fb233eff369e069800b149df85d589550393f94e1ae7cb41cc58882",
     "parts": [
       "og-default.webp.b64.000",
-      "og-default.webp.b64.001"
+      "og-default.webp.b64.001",
+      "og-default.webp.b64.002",
+      "og-default.webp.b64.003",
+      "og-default.webp.b64.004",
+      "og-default.webp.b64.005"
     ]
   }
 }
