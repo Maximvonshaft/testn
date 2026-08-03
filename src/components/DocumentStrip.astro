@@ -4,11 +4,12 @@ interface Props { copy: SiteCopy; }
 const { copy } = Astro.props;
 const marks = ['CE','EPD','ISO','FIRE','ENV'];
 ---
-<section class="document-strip" aria-label="Technical documentation status">
+<section class="document-strip" aria-label={copy.nav.technical} tabindex="0">
   {copy.documents.map((document,index)=><div class="document"><strong>{marks[index]}</strong><span>{document}</span></div>)}
 </section>
 <style>
 .document-strip{width:min(1440px,calc(100vw - 48px));margin:0 auto 64px;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.document-strip:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 .document{min-height:84px;padding:18px 20px;display:grid;place-items:center;text-align:center;border-right:1px solid var(--line)}.document:last-child{border-right:0}.document strong{font-family:var(--font-serif);font-size:17px;font-weight:500}.document span{color:var(--muted);font-size:9px;line-height:1.35}
 @media(max-width:700px){.document-strip{width:calc(100vw - 24px);grid-template-columns:repeat(5,136px);overflow-x:auto}.document{min-height:76px;padding:14px 10px}}
 </style>
