@@ -46,10 +46,10 @@ export default defineConfig({
         "connect-src 'self' https://challenges.cloudflare.com https://plausible.io",
         "frame-src https://challenges.cloudflare.com",
         "worker-src 'self' blob:",
+        "style-src-attr 'unsafe-inline'",
         "object-src 'none'",
         "base-uri 'self'",
-        "form-action 'self'",
-        "frame-ancestors 'none'"
+        "form-action 'self'"
       ],
       scriptDirective: {
         resources: ["'self'", 'https://challenges.cloudflare.com', 'https://plausible.io'],
