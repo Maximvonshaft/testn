@@ -8,7 +8,10 @@ test.beforeEach(async ({ page }) => {
   const errors: string[] = [];
   runtimeErrors.set(page, errors);
   page.on('console', (message) => {
-    if (message.type() === 'error' && !/WebGL|favicon|turnstile/i.test(message.text())) errors.push(message.text());
+    if (message.type() !== 'error' || /WebGL|favicon|turnstile/i.test(message.text())) return;
+    const location = message.location();
+    const position = location.url ? ` (${location.url}${location.lineNumber ? `:${location.lineNumber}` : ''})` : '';
+    errors.push(`${message.text()}${position}`);
   });
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/en/', { waitUntil: 'domcontentloaded' });
@@ -36,9 +39,9 @@ test('switches product system and applies the selected material to the scene', a
   const title = page.locator('h1');
   const overlay = page.locator('[data-scene-experience] [data-mask]');
   const beforeImage = await overlay.getAttribute('style');
-  await page.locator('[role="tab"]').filter({ hasText: /Kitchen surfaces/i }).first().click();
+  await page.locator('[role="tab"]:visible').filter({ hasText: /Kitchen surfaces/i }).first().click();
   await expect(title).toContainText(/Performance/i);
-  await page.locator('[role="option"]').filter({ hasText: 'Pietra Grey' }).click();
+  await page.locator('[role="option"]:visible').filter({ hasText: 'Pietra Grey' }).click();
   await expect(page.getByText(/Selected finish: Pietra Grey/i)).toBeVisible();
   const afterImage = await overlay.getAttribute('style');
   expect(afterImage).not.toBe(beforeImage);
@@ -54,7 +57,7 @@ test('exposes the five-layer material architecture', async ({ page }) => {
 });
 
 test('opens an accessible production lead flow and fails closed when secrets are absent', async ({ page }) => {
-  await page.locator('[data-open-lead]').first().click();
+  await page.locator('[data-open-lead]:visible').first().click();
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole('heading', { name: /Request samples/i })).toBeVisible();
