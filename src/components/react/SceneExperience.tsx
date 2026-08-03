@@ -1,6 +1,14 @@
-import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { materials, systems, type MaterialId, type SystemId, type SystemVisual, type MaterialVisual } from '@/data/catalog';
+import {
+  materialSlabAtlas,
+  materials,
+  sceneStateAtlases,
+  systems,
+  type MaterialId,
+  type SystemId,
+  type SystemVisual,
+} from '@/data/catalog';
 import type { SiteCopy } from '@/data/copy';
 import styles from './SceneExperience.module.css';
 
@@ -15,10 +23,6 @@ const icons: Record<SystemId, ReactNode> = {
   exterior: <path d="M4 21V9l6-4v16M10 21V3l10 5v13M7 12h1M7 16h1M14 10h2M14 14h2M14 18h2" />,
 };
 
-function SystemIcon({ id }: { id: SystemId }) {
-  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{icons[id]}</svg>;
-}
-
 const benefitIcons = [
   <path key="1" d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"/>,
   <path key="2" d="m12 3 1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/>,
@@ -27,22 +31,104 @@ const benefitIcons = [
   <path key="5" d="M20 4C11 4 5 8 5 15c0 3 2 5 5 5 7 0 10-7 10-16Z M4 21c3-6 7-9 13-12"/>,
 ];
 
-const defaultSystem: SystemVisual = systems[0]!;
-const defaultMaterial: MaterialVisual = materials[0]!;
+const atlasCache = new Map<string, Promise<void>>();
+
+function SystemIcon({ id }: { id: SystemId }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{icons[id]}</svg>;
+}
+
+function activeAtlas(): string {
+  if (typeof window === 'undefined') return sceneStateAtlases.desktop;
+  return window.matchMedia('(max-width: 760px)').matches ? sceneStateAtlases.mobile : sceneStateAtlases.desktop;
+}
+
+function preloadAtlas(): Promise<void> {
+  if (typeof window === 'undefined') return Promise.resolve();
+  const url = activeAtlas();
+  const existing = atlasCache.get(url);
+  if (existing) return existing;
+
+  const promise = (async () => {
+    const image = new Image();
+    image.decoding = 'async';
+    image.src = url;
+    if (!image.complete) {
+      await new Promise<void>((resolve, reject) => {
+        image.onload = () => resolve();
+        image.onerror = () => reject(new Error(`Unable to load scene atlas: ${url}`));
+      });
+    }
+    if (typeof image.decode === 'function') await image.decode();
+  })().catch((error) => {
+    atlasCache.delete(url);
+    throw error;
+  });
+  atlasCache.set(url, promise);
+  return promise;
+}
+
+function SceneLayer({ system, materialIndex, priority, reduceMotion }: { system: SystemVisual; materialIndex: number; priority: boolean; reduceMotion: boolean }) {
+  const translateX = `${materialIndex * -(100 / 9)}%`;
+  const translateY = `${system.atlasRow * -(100 / 6)}%`;
+  return (
+    <motion.div
+      className={styles.sceneLayer}
+      initial={{ opacity: 0, scale: 1.012 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: .996 }}
+      transition={{ duration: reduceMotion ? 0 : .58, ease: [.22, 1, .36, 1] }}
+    >
+      <picture className={styles.atlasPicture}>
+        <source media="(max-width: 760px)" srcSet={sceneStateAtlases.mobile} />
+        <img
+          className={styles.atlasImage}
+          data-state-atlas
+          src={sceneStateAtlases.desktop}
+          alt=""
+          aria-hidden="true"
+          width="5400"
+          height="2250"
+          decoding="async"
+          fetchPriority={priority ? 'high' : 'auto'}
+          style={{ transform: `translate3d(${translateX},${translateY},0)` }}
+        />
+      </picture>
+    </motion.div>
+  );
+}
 
 export default function SceneExperience({ copy }: Props) {
   const reduceMotion = useReducedMotion();
   const [systemId, setSystemId] = useState<SystemId>('bathroom');
+  const [requestedSystemId, setRequestedSystemId] = useState<SystemId>('bathroom');
   const [materialId, setMaterialId] = useState<MaterialId>('bianco-lumen');
-  const system = useMemo<SystemVisual>(() => systems.find((item) => item.id === systemId) ?? defaultSystem, [systemId]);
-  const material = useMemo<MaterialVisual>(() => materials.find((item) => item.id === materialId) ?? defaultMaterial, [materialId]);
+  const [loading, setLoading] = useState(false);
+  const requestSequence = useRef(0);
+  const system = useMemo(() => systems.find((item) => item.id === systemId) ?? systems[0]!, [systemId]);
+  const material = useMemo(() => materials.find((item) => item.id === materialId) ?? materials[0]!, [materialId]);
   const text = copy.systems[systemId];
 
   useEffect(() => {
     window.dispatchEvent(new CustomEvent('aquastone:selection', { detail: { system: systemId, material: material.name } }));
   }, [systemId, material.name]);
 
-  const changeSystem = (id: SystemId) => setSystemId(id);
+  const changeSystem = async (id: SystemId) => {
+    if (id === systemId) return;
+    const sequence = requestSequence.current + 1;
+    requestSequence.current = sequence;
+    setRequestedSystemId(id);
+    setLoading(true);
+    try {
+      await preloadAtlas();
+      if (requestSequence.current !== sequence) return;
+      setSystemId(id);
+    } catch {
+      if (requestSequence.current === sequence) setRequestedSystemId(systemId);
+    } finally {
+      if (requestSequence.current === sequence) setLoading(false);
+    }
+  };
+
   const changeMaterial = (id: MaterialId) => setMaterialId(id);
 
   return (
@@ -52,7 +138,17 @@ export default function SceneExperience({ copy }: Props) {
           <p className={styles.railTitle}>{copy.hero.railTitle}</p>
           <div className={styles.systemList} role="tablist" aria-orientation="vertical">
             {systems.map((item) => (
-              <button key={item.id} type="button" className={styles.systemButton} data-active={item.id === systemId} role="tab" aria-selected={item.id === systemId} onClick={() => changeSystem(item.id)}>
+              <button
+                key={item.id}
+                type="button"
+                className={styles.systemButton}
+                data-active={item.id === systemId}
+                data-pending={loading && item.id === requestedSystemId}
+                role="tab"
+                aria-selected={item.id === systemId}
+                aria-busy={loading && item.id === requestedSystemId}
+                onClick={() => void changeSystem(item.id)}
+              >
                 <SystemIcon id={item.id} /><span className={styles.systemLabel}>{copy.systems[item.id].label}</span><span className={styles.chevron}>›</span>
               </button>
             ))}
@@ -60,15 +156,20 @@ export default function SceneExperience({ copy }: Props) {
           <a className={styles.allSystems} href="#systems">{copy.actions.allSystems} →</a>
         </aside>
 
-        <div className={styles.hero} style={{ '--focus': system.focalPoint } as CSSProperties}>
-          <AnimatePresence mode="popLayout" initial={false}>
-            <motion.img key={`${system.id}-desktop`} className={`${styles.heroImage} ${styles.heroImageDesktop}`} src={system.desktopImage} alt="" aria-hidden="true" initial={{ opacity: 0, scale: 1.025 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .99 }} transition={{ duration: reduceMotion ? 0 : .65 }} fetchPriority={system.id === 'bathroom' ? 'high' : 'auto'} />
+        <div
+          className={styles.hero}
+          data-loading={loading}
+          data-scene-state={`${systemId}:${materialId}`}
+          data-scene-system={systemId}
+          data-scene-material={materialId}
+          aria-busy={loading}
+          aria-label={`${text.label}: ${material.name}`}
+        >
+          <AnimatePresence mode="sync" initial={false}>
+            <SceneLayer key={`${systemId}-${materialId}`} system={system} materialIndex={material.atlasIndex} priority={systemId === 'bathroom'} reduceMotion={Boolean(reduceMotion)} />
           </AnimatePresence>
-          <AnimatePresence mode="popLayout" initial={false}>
-            <motion.img key={`${system.id}-mobile`} className={`${styles.heroImage} ${styles.heroImageMobile}`} src={system.mobileImage} alt="" aria-hidden="true" initial={{ opacity: 0, scale: 1.025 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: .99 }} transition={{ duration: reduceMotion ? 0 : .65 }} />
-          </AnimatePresence>
-          <motion.div className={styles.materialOverlay} data-mask={system.materialMask} style={{ backgroundImage: `url(${material.image})` }} animate={{ opacity: material.id === 'bianco-lumen' ? .32 : .58 }} transition={{ duration: reduceMotion ? 0 : .45 }} aria-hidden="true" />
           <div className={styles.heroShade} />
+          <div className={styles.loadingVeil} aria-hidden="true"><span /></div>
           <div className={styles.sceneIndex}><span>{String(systems.findIndex((item) => item.id === systemId) + 1).padStart(2, '0')}</span><span>/</span><span>06</span></div>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={systemId} className={styles.copyBlock} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: reduceMotion ? 0 : .45 }}>
@@ -78,17 +179,39 @@ export default function SceneExperience({ copy }: Props) {
               <a className={styles.heroLink} href="#technology">{copy.actions.details} &nbsp;→</a>
             </motion.div>
           </AnimatePresence>
+          <span className="sr-only" aria-live="polite">{loading ? `Loading ${copy.systems[requestedSystemId].label}` : `${text.label}, ${material.name}`}</span>
         </div>
       </div>
 
       <div className={styles.mobileSystemStrip} role="tablist" aria-label={copy.hero.railTitle}>
-        {systems.map((item) => <button key={item.id} type="button" className={styles.mobileSystemButton} data-active={item.id === systemId} role="tab" aria-selected={item.id === systemId} onClick={() => changeSystem(item.id)}><SystemIcon id={item.id}/><span>{copy.systems[item.id].label}</span></button>)}
+        {systems.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            className={styles.mobileSystemButton}
+            data-active={item.id === systemId}
+            data-pending={loading && item.id === requestedSystemId}
+            role="tab"
+            aria-selected={item.id === systemId}
+            onClick={() => void changeSystem(item.id)}
+          >
+            <SystemIcon id={item.id}/><span>{copy.systems[item.id].label}</span>
+          </button>
+        ))}
       </div>
 
       <div className={styles.materialDock}>
         <div className={styles.materialDockHeader}><span>{copy.hero.materialTitle}</span><span aria-live="polite">{copy.hero.selected}: {material.name}</span></div>
         <div className={styles.materialTrack} role="listbox" aria-label={copy.hero.materialTitle}>
-          {materials.map((item) => <button key={item.id} type="button" className={styles.materialButton} data-active={item.id === materialId} role="option" aria-selected={item.id === materialId} onClick={() => changeMaterial(item.id)}><span className={styles.slab} style={{ backgroundImage: `url(${item.image})` }} /><span className={styles.materialName}>{item.name}</span></button>)}
+          {materials.map((item) => {
+            const position = item.atlasIndex === 0 ? 0 : (item.atlasIndex / (materials.length - 1)) * 100;
+            return (
+              <button key={item.id} type="button" className={styles.materialButton} data-active={item.id === materialId} role="option" aria-selected={item.id === materialId} onClick={() => changeMaterial(item.id)}>
+                <span className={styles.slab} style={{ backgroundImage: `url(${materialSlabAtlas})`, backgroundPosition: `${position}% 50%` } as CSSProperties} />
+                <span className={styles.materialName}>{item.name}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
