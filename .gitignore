@@ -12,5 +12,6 @@ coverage/
 qa-artifacts/
 runtime-artifacts/
 studio/dist/
+public/assets/visual/
 .DS_Store
 *.log
