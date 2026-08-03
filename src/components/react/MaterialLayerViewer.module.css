@@ -16,6 +16,7 @@
 .noteTitle { display: block; font-size: 10px; font-weight: 720; letter-spacing: .07em; text-transform: uppercase; }
 .noteBody { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.45; }
 .performance { margin-top: 40px; display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--line); border-radius: 17px; overflow: hidden; background: rgba(255,255,255,.35); }
+.performance:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .value { min-height: 116px; padding: 22px; border-right: 1px solid var(--line); }
 .value:last-child { border-right: 0; }
 .valueIcon { display: grid; place-items: center; width: 32px; height: 32px; margin-bottom: 14px; border: 1px solid var(--line); border-radius: 50%; font-size: 13px; }
