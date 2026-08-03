@@ -54,11 +54,7 @@ export default defineConfig({
         resources: ["'self'", 'https://challenges.cloudflare.com', 'https://plausible.io'],
       },
       styleDirective: {
-        resources: [
-          { resource: "'self'", kind: 'element' },
-          { resource: "'unsafe-inline'", kind: 'element' },
-          { resource: "'unsafe-inline'", kind: 'attribute' },
-        ],
+        resources: ["'self'", "'unsafe-inline'"],
       },
     },
   },
