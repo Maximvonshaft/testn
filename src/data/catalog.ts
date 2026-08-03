@@ -33,12 +33,12 @@ export interface MaterialVisual {
 const visualRoot = '/assets/visual';
 
 export const sceneStateAtlases = {
-  desktop: `${visualRoot}/scene-grid-desktop.webp`,
-  mobile: `${visualRoot}/scene-grid-mobile.webp`,
+  desktop: `${visualRoot}/scene-grid-desktop.avif`,
+  mobile: `${visualRoot}/scene-grid-mobile.avif`,
 } as const;
 
-export const systemCardAtlas = `${visualRoot}/cards-atlas.webp`;
-export const materialSlabAtlas = `${visualRoot}/materials/slab-atlas.webp`;
+export const systemCardAtlas = `${visualRoot}/cards-atlas.avif`;
+export const materialSlabAtlas = `${visualRoot}/materials/slab-atlas.avif`;
 export const sceneAtlasColumns = 9 as const;
 export const sceneAtlasRows = 6 as const;
 
