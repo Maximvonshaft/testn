@@ -1,22 +1,17 @@
 {
-  "scene-grid-desktop.avif": {
-    "bytes": 357632,
-    "sha256": "dab240b50d15b8a8804a4e3be50902f03c23ea86321eeaa6ff4c0b2e6be78c55"
-  },
-  "scene-grid-mobile.avif": {
-    "bytes": 110465,
-    "sha256": "185fb8f8ac5aeea3f493cc669377d6cecb503e2b2181f55a8af6878c31036c57"
-  },
-  "cards-atlas.avif": {
-    "bytes": 46388,
-    "sha256": "d1feb107509d2f418c53355214095a49d9259220c22b30569aede844e910ca37"
-  },
-  "slab-atlas.avif": {
-    "bytes": 8218,
-    "sha256": "e9682a6afe803f58fab1cf4955a931b70261ab0b6f826e6e38abe0209df54114"
-  },
-  "og-default.webp": {
-    "bytes": 32338,
-    "sha256": "54efd5577fb233eff369e069800b149df85d589550393f94e1ae7cb41cc58882"
-  }
+  "bathroom-desktop.avif": { "bytes": 24831, "sha256": "e607f3b61f48ab9ac52d63cae5dc45ee19cc47462cfbc783de7a21154f44773f" },
+  "bathroom-mobile.avif": { "bytes": 6104, "sha256": "c3a4446292b626d3f34b3d683a7e529780a9302fde4cd7a68649824ce0275c62" },
+  "interior-desktop.avif": { "bytes": 22169, "sha256": "0c0d317c823bd4adfb85530adea21913febf0dc62c57986bc31f2ee6115a8f2b" },
+  "interior-mobile.avif": { "bytes": 11305, "sha256": "89762e56dad333dea36486bfe1f1bdf4c35b257ba1135dca6e3251819fa043bc" },
+  "kitchen-desktop.avif": { "bytes": 38026, "sha256": "fe7d2aa36f32cfd6cfbf24a13366edde43c4f785740ce1c481d0baca7b6b037a" },
+  "kitchen-mobile.avif": { "bytes": 12593, "sha256": "ecf5bedbe4f89c1c8bb5607986518c1c41d717886fe90f0268128f64caff58d2" },
+  "hospitality-desktop.avif": { "bytes": 25780, "sha256": "b3e57d394f0dc2d73336d5fb2f591eddbe3b220fba366902f3d6823a96539251" },
+  "hospitality-mobile.avif": { "bytes": 8890, "sha256": "f396ec75ce680a4b9abf8867f5c81b42c39266a1a7f00e0cafc1c06be1ff49db" },
+  "furniture-desktop.avif": { "bytes": 24642, "sha256": "ec44f2108a9d4541ecd2d4894bd806f5e09e974af2a614b32924b266ab801bfb" },
+  "furniture-mobile.avif": { "bytes": 11447, "sha256": "cf6c712f848bfc250f18beaf42b34c1f28df659c6235a3650e340079d876fda7" },
+  "exterior-desktop.avif": { "bytes": 58795, "sha256": "4c661b11e6a9f7b1dd9db0253a16f7b994ed749687e4a27786e5452493308daf" },
+  "exterior-mobile.avif": { "bytes": 20290, "sha256": "d0c61c87226ab24b08fa04d063fb5b2652a4780d51686b2ca1056a0adae496c6" },
+  "cards-atlas.avif": { "bytes": 46388, "sha256": "d1feb107509d2f418c53355214095a49d9259220c22b30569aede844e910ca37" },
+  "slab-atlas.avif": { "bytes": 8218, "sha256": "e9682a6afe803f58fab1cf4955a931b70261ab0b6f826e6e38abe0209df54114" },
+  "og-default.webp": { "bytes": 32338, "sha256": "54efd5577fb233eff369e069800b149df85d589550393f94e1ae7cb41cc58882" }
 }
