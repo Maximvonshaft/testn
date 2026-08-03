@@ -31,12 +31,14 @@ const jsonLd = {
     {alternates.map(({ locale: code, href }) => <link rel="alternate" hreflang={code === 'cnr' ? 'cnr-ME' : code} href={new URL(href, Astro.site ?? Astro.url.origin).toString()} />)}
     <link rel="alternate" hreflang="x-default" href={new URL('/en/', Astro.site ?? Astro.url.origin).toString()} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" as="image" type="image/webp" href="/assets/visual/scene-grid-desktop.webp" media="(min-width: 761px)" fetchpriority="high" />
+    <link rel="preload" as="image" type="image/webp" href="/assets/visual/scene-grid-mobile.webp" media="(max-width: 760px)" fetchpriority="high" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL('/assets/scenes/bathroom.svg', Astro.site ?? Astro.url.origin).toString()} />
+    <meta property="og:image" content={new URL('/assets/visual/social/og-default.webp', Astro.site ?? Astro.url.origin).toString()} />
     <meta name="twitter:card" content="summary_large_image" />
     <title>{title}</title>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
