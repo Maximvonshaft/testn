@@ -55,12 +55,13 @@ test('exposes the five-layer material architecture', async ({ page }) => {
 
 test('opens an accessible production lead flow and fails closed when secrets are absent', async ({ page }) => {
   await page.locator('[data-open-lead]').first().click();
-  await expect(page.getByRole('dialog')).toBeVisible();
-  await expect(page.getByRole('dialog').getByRole('heading', { name: /Request samples/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Submit request/i })).toBeDisabled();
-  await expect(page.getByText(/not yet configured/i)).toBeVisible();
-  await page.getByRole('button', { name: 'Close' }).click();
-  await expect(page.getByRole('dialog')).toBeHidden();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole('heading', { name: /Request samples/i })).toBeVisible();
+  await expect(dialog.getByRole('button', { name: /Submit request/i })).toBeDisabled();
+  await expect(dialog.getByRole('status')).toContainText(/not configured yet/i);
+  await dialog.getByRole('button', { name: 'Close' }).click();
+  await expect(dialog).toBeHidden();
 });
 
 test('serves complete localized routes', async ({ page }) => {
