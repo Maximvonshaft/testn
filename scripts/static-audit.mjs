@@ -34,7 +34,7 @@ for (const required of ['package.json','astro.config.mjs','src/pages/[locale]/in
 const imageAssets = files.filter((file) => /public\/assets\/.+\.(webp|avif|png|svg)$/i.test(file));
 imageAssets.length >= 21 ? pass('owned-asset-library', `${imageAssets.length} local assets`) : fail('owned-asset-library', `only ${imageAssets.length} assets`);
 
-const atlasAssets = files.filter((file) => /public\/assets\/visual\/scene-grid-(desktop|mobile)\.webp$/i.test(file));
+const atlasAssets = files.filter((file) => /public\/assets\/visual\/scene-grid-(desktop|mobile)\.avif$/i.test(file));
 atlasAssets.length === 2 ? pass('complete-state-atlases', '2 responsive global state matrices') : fail('complete-state-atlases', `${atlasAssets.length} != 2`);
 
 const externalImage = /https?:\/\/(?:images\.unsplash|images\.pexels|.*cloudinary|.*imgix)/i.test(joined);
@@ -43,7 +43,7 @@ externalImage ? fail('no-image-hotlinking', 'external image CDN reference detect
 for (const file of imageAssets) {
   const bytes = (await stat(file)).size;
   const name = relative(root.pathname, file);
-  const limit = name.includes('/scene-grid-') ? 800_000 : 450_000;
+  const limit = name.includes('/scene-grid-') ? 500_000 : 450_000;
   bytes <= limit ? pass(`asset-budget:${name}`, `${bytes} B`) : fail(`asset-budget:${name}`, `${bytes} B exceeds ${limit}`);
 }
 
@@ -74,7 +74,7 @@ copy.includes('Object.fromEntries(Object.entries(commonPagesEn)') ? fail('no-lan
 for (const route of ['/api/lead','TURNSTILE_SECRET_KEY','LEAD_WEBHOOK_URL','idempotency-key','origin_rejected']) joined.includes(route) ? pass(`lead-security:${route}`) : fail(`lead-security:${route}`, 'missing');
 
 const totalAssetBytes = (await Promise.all(imageAssets.map((file) => stat(file).then((info) => info.size)))).reduce((a,b)=>a+b,0);
-totalAssetBytes <= 8_000_000 ? pass('total-image-budget', `${totalAssetBytes} B`) : fail('total-image-budget', `${totalAssetBytes} B`);
+totalAssetBytes <= 7_500_000 ? pass('total-image-budget', `${totalAssetBytes} B`) : fail('total-image-budget', `${totalAssetBytes} B`);
 
 console.log(JSON.stringify({ status: failures.length ? 'failed' : 'passed', passed: checks.filter((item) => item.pass).length, total: checks.length, checks }, null, 2));
 if (failures.length) {
