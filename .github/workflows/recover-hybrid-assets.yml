@@ -1,0 +1,48 @@
+name: Recover hybrid visual assets
+
+on:
+  push:
+    branches: [feat/hybrid-visual-system-final]
+    paths: [.github/workflows/recover-hybrid-assets.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: recover-hybrid-assets
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/hybrid-visual-system-final
+          fetch-depth: 0
+      - name: Recover persisted AQV1 chunks
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin feat/hybrid-visual-system-v2:refs/remotes/origin/feat/hybrid-visual-system-v2
+          mkdir -p src/assets-packed qa-evidence
+          mapfile -t files < <(git ls-tree -r --name-only origin/feat/hybrid-visual-system-v2 -- src/assets-packed | grep 'visual-bundle\.aqv\.b64\.' | sort || true)
+          for path in "${files[@]}"; do
+            git show "origin/feat/hybrid-visual-system-v2:${path}" > "${path}"
+          done
+          {
+            echo "recovered_count=${#files[@]}"
+            printf '%s\n' "${files[@]}"
+          } > qa-evidence/hybrid-asset-recovery.txt
+          set +e
+          node scripts/materialize-visual-assets.mjs > qa-evidence/hybrid-materialize.log 2>&1
+          materialize_status=$?
+          set -e
+          echo "materialize_status=${materialize_status}" >> qa-evidence/hybrid-asset-recovery.txt
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/assets-packed qa-evidence/hybrid-asset-recovery.txt qa-evidence/hybrid-materialize.log
+          git rm .github/workflows/recover-hybrid-assets.yml
+          git commit -m 'assets: recover persisted hybrid visual bundle chunks'
+          git push origin HEAD:feat/hybrid-visual-system-final
