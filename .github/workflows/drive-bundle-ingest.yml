@@ -1,0 +1,44 @@
+name: Ingest verified visual bundle
+
+on:
+  push:
+    branches: [feat/hybrid-visual-system-final]
+    paths: [.github/workflows/drive-bundle-ingest.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: drive-bundle-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/hybrid-visual-system-final
+      - name: Download, verify and persist result
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p qa-evidence src/assets-packed
+          url='https://drive.google.com/uc?export=download&id=1VMK28OMYQ1ImSFAj_GjxVqihGzJoWUFA'
+          code=$(curl -L --silent --show-error -o /tmp/visual-bundle.aqv -w '%{http_code}' "$url" || true)
+          bytes=$(wc -c < /tmp/visual-bundle.aqv 2>/dev/null || echo 0)
+          digest=$(sha256sum /tmp/visual-bundle.aqv 2>/dev/null | awk '{print $1}')
+          kind=$(file -b /tmp/visual-bundle.aqv 2>/dev/null || true)
+          valid=false
+          if [ "$code" = '200' ] && [ "$bytes" = '243585' ] && [ "$digest" = 'f64c88e965f800f5c014b467d840cfbc10880364a876fdedcaeafd0459700e14' ]; then
+            valid=true
+            cp /tmp/visual-bundle.aqv src/assets-packed/visual-bundle.aqv
+          fi
+          printf 'http=%s\nbytes=%s\nsha256=%s\ntype=%s\nvalid=%s\n' "$code" "$bytes" "$digest" "$kind" "$valid" > qa-evidence/drive-bundle-ingest.txt
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add qa-evidence/drive-bundle-ingest.txt src/assets-packed/visual-bundle.aqv 2>/dev/null || true
+          git rm .github/workflows/drive-bundle-ingest.yml
+          git commit -m 'assets: record verified Drive bundle ingest'
+          git push origin HEAD:feat/hybrid-visual-system-final
