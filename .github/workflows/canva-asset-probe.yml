@@ -1,0 +1,32 @@
+name: Probe Canva asset transport
+
+on:
+  push:
+    branches: [feat/hybrid-visual-system-final]
+    paths: [.github/workflows/canva-asset-probe.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe signed asset variants
+        shell: bash
+        run: |
+          set -uo pipefail
+          BASE='https://media.canva.com/v2/image-resize'
+          URI='uri:ifs%3A%2F%2FM%2F6a256556-ef2a-4ee5-86be-7bc6142531ba'
+          QUERY='exp=1785825908&osig=AAAAAAAAAAAAAAAAAAAAAAM8aIOBzDfkd19qNet4Dwbk3aK6vBkQMLTocjhES0Vz&signer=media-rpc'
+          THUMB="${BASE}/format:PNG/height:29/quality:100/${URI}/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAANA3OkHeItvcYdLsI72zmt3WFxOF7rGC3chDUZkmtGpk&${QUERY}&x-canva-quality=thumbnail"
+          FULL_WITH_CSIG="${BASE}/format:PNG/height:400/quality:100/${URI}/watermark:F/width:2700?csig=AAAAAAAAAAAAAAAAAAAAANA3OkHeItvcYdLsI72zmt3WFxOF7rGC3chDUZkmtGpk&${QUERY}"
+          FULL_OSIG="${BASE}/format:PNG/height:400/quality:100/${URI}/watermark:F/width:2700?${QUERY}"
+          for pair in "thumb|${THUMB}" "full-csig|${FULL_WITH_CSIG}" "full-osig|${FULL_OSIG}"; do
+            name=${pair%%|*}; url=${pair#*|}
+            code=$(curl -L --silent --show-error -o "${name}.bin" -w '%{http_code}' "$url" || true)
+            echo "${name}: HTTP ${code}, bytes $(wc -c < "${name}.bin" 2>/dev/null || echo 0)"
+            file "${name}.bin" || true
+            sha256sum "${name}.bin" || true
+          done
