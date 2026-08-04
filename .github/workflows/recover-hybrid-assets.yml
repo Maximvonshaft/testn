@@ -1,6 +1,9 @@
 name: Recover hybrid visual assets
 
 on:
+  pull_request:
+    branches: [main]
+    paths: [.github/workflows/recover-hybrid-assets.yml]
   push:
     branches: [feat/hybrid-visual-system-final]
     paths: [.github/workflows/recover-hybrid-assets.yml]
@@ -15,6 +18,7 @@ concurrency:
 
 jobs:
   recover:
+    if: github.repository == 'Maximvonshaft/testn'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
