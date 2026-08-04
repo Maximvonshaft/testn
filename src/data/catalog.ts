@@ -17,6 +17,7 @@ export interface SystemVisual {
   id: SystemId;
   desktopAtlas: string;
   mobileAtlas: string;
+  cardImage: string;
   focalPoint: string;
 }
 
@@ -31,11 +32,12 @@ export interface MaterialVisual {
   roughness: number;
 }
 
-const visualRoot = '/assets/visual/systems';
+const visualRoot = '/assets/visual';
 const systemVisual = (id: SystemId, focalPoint: string): SystemVisual => ({
   id,
-  desktopAtlas: `${visualRoot}/${id}-desktop.avif`,
-  mobileAtlas: `${visualRoot}/${id}-mobile.avif`,
+  desktopAtlas: `${visualRoot}/systems/${id}-desktop.avif`,
+  mobileAtlas: `${visualRoot}/systems/${id}-mobile.avif`,
+  cardImage: `${visualRoot}/cards/${id}-card.avif`,
   focalPoint,
 });
 
@@ -70,5 +72,6 @@ export function getMaterialVisual(id: MaterialId): MaterialVisual {
 }
 
 export const projectSystems: readonly SystemId[] = ['exterior', 'interior', 'kitchen'] as const;
+export const projectImages: readonly string[] = projectSystems.map((id) => getSystemVisual(id).cardImage);
 export const pageSlugs = ['collections', 'systems', 'technical', 'sustainability', 'about', 'privacy', 'thanks'] as const;
 export type PageSlug = (typeof pageSlugs)[number];
