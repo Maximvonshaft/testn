@@ -7,16 +7,25 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: canva-asset-probe
+  cancel-in-progress: false
 
 jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/hybrid-visual-system-final
       - name: Probe signed asset variants
         shell: bash
         run: |
           set -uo pipefail
+          mkdir -p qa-evidence
+          : > qa-evidence/canva-probe.txt
           BASE='https://media.canva.com/v2/image-resize'
           URI='uri:ifs%3A%2F%2FM%2F6a256556-ef2a-4ee5-86be-7bc6142531ba'
           QUERY='exp=1785825908&osig=AAAAAAAAAAAAAAAAAAAAAAM8aIOBzDfkd19qNet4Dwbk3aK6vBkQMLTocjhES0Vz&signer=media-rpc'
@@ -26,7 +35,14 @@ jobs:
           for pair in "thumb|${THUMB}" "full-csig|${FULL_WITH_CSIG}" "full-osig|${FULL_OSIG}"; do
             name=${pair%%|*}; url=${pair#*|}
             code=$(curl -L --silent --show-error -o "${name}.bin" -w '%{http_code}' "$url" || true)
-            echo "${name}: HTTP ${code}, bytes $(wc -c < "${name}.bin" 2>/dev/null || echo 0)"
-            file "${name}.bin" || true
-            sha256sum "${name}.bin" || true
+            bytes=$(wc -c < "${name}.bin" 2>/dev/null || echo 0)
+            kind=$(file -b "${name}.bin" 2>/dev/null || true)
+            digest=$(sha256sum "${name}.bin" 2>/dev/null | awk '{print $1}')
+            printf '%s: HTTP %s, bytes %s, type %s, sha256 %s\n' "$name" "$code" "$bytes" "$kind" "$digest" | tee -a qa-evidence/canva-probe.txt
           done
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add qa-evidence/canva-probe.txt
+          git rm .github/workflows/canva-asset-probe.yml
+          git commit -m 'test: record Canva asset transport probe'
+          git push origin HEAD:feat/hybrid-visual-system-final
