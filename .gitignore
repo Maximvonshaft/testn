@@ -14,4 +14,3 @@ runtime-artifacts/
 studio/dist/
 .DS_Store
 *.log
-public/assets/visual/systems/
