@@ -1,0 +1,50 @@
+name: Report hybrid recovery diagnostics
+
+on:
+  push:
+    branches: [feat/hybrid-visual-system-final]
+    paths: [.github/workflows/report-hybrid-recovery.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/hybrid-visual-system-final
+      - name: Publish recovery report
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: feat/hybrid-visual-system-final
+        shell: bash
+        run: |
+          set -euo pipefail
+          report=$(cat qa-evidence/hybrid-asset-recovery.txt 2>/dev/null || echo 'recovery report missing')
+          log=$(tail -n 80 qa-evidence/hybrid-materialize.log 2>/dev/null || echo 'materializer log missing')
+          body=$(printf '## Hybrid asset recovery diagnostics\n\n```text\n%s\n\n--- materializer tail ---\n%s\n```' "$report" "$log")
+          jq -n --arg body "$body" '{body:$body}' > /tmp/comment.json
+          curl -fsSL -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${REPOSITORY}/issues/40/comments" \
+            -d @/tmp/comment.json >/dev/null
+          sha=$(curl -fsSL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${REPOSITORY}/contents/.github/workflows/report-hybrid-recovery.yml?ref=${BRANCH}" | jq -r .sha)
+          jq -n --arg message 'chore: remove temporary recovery reporter' --arg branch "$BRANCH" --arg sha "$sha" '{message:$message,branch:$branch,sha:$sha}' > /tmp/delete.json
+          curl -fsSL -X DELETE \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/${REPOSITORY}/contents/.github/workflows/report-hybrid-recovery.yml" \
+            -d @/tmp/delete.json >/dev/null
