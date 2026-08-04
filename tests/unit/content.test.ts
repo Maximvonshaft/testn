@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { locales, materials, pageSlugs, systems } from '@/data/catalog';
+import { locales, materials, pageSlugs, sceneAtlasColumns, systems } from '@/data/catalog';
 import { copy, getCopy } from '@/data/copy';
 import { leadSchema, publicLead } from '@/lib/lead';
 
@@ -9,6 +9,16 @@ describe('production catalog', () => {
     expect(materials).toHaveLength(9);
     expect(new Set(systems.map((item) => item.id)).size).toBe(6);
     expect(new Set(materials.map((item) => item.id)).size).toBe(9);
+  });
+
+  it('defines deterministic responsive complete-state assets', () => {
+    expect(sceneAtlasColumns).toBe(9);
+    for (const system of systems) {
+      expect(system.desktopAtlas).toBe(`/assets/visual/systems/${system.id}-desktop.avif`);
+      expect(system.mobileAtlas).toBe(`/assets/visual/systems/${system.id}-mobile.avif`);
+      expect(system.cardImage).toBe(`/assets/visual/cards/${system.id}-card.avif`);
+    }
+    expect(materials.map((item) => item.atlasIndex)).toEqual([0,1,2,3,4,5,6,7,8]);
   });
 
   it('provides complete localized content', () => {

@@ -1,5 +1,8 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
+import { materializeVisualAssets } from './materialize-visual-assets.mjs';
+
+await materializeVisualAssets();
 
 const root = new URL('../', import.meta.url);
 const failures = [];
@@ -20,16 +23,23 @@ async function walk(path) {
 
 const files = await walk(root.pathname);
 const sourceFiles = files.filter((file) => ['.ts','.tsx','.astro','.css','.mjs','.json','.jsonc'].includes(extname(file)) && !file.endsWith('scripts/static-audit.mjs'));
-const source = (await Promise.all(sourceFiles.map((file) => readFile(file, 'utf8').then((content) => ({ file, content })))));
+const productSourceFiles = sourceFiles.filter((file) => !relative(root.pathname, file).startsWith('tests/'));
+const source = await Promise.all(sourceFiles.map((file) => readFile(file, 'utf8').then((content) => ({ file, content }))));
 const joined = source.map(({ content }) => content).join('\n');
+const productJoined = (await Promise.all(productSourceFiles.map((file) => readFile(file, 'utf8')))).join('\n');
 
-for (const required of ['package.json','astro.config.mjs','src/pages/[locale]/index.astro','src/pages/api/lead.ts','src/components/react/SceneExperience.tsx','src/components/react/MaterialLayerViewer.tsx','src/components/react/LeadDialog.tsx','scripts/record-runtime.mjs','wrangler.jsonc']) {
+for (const required of ['package.json','astro.config.mjs','src/pages/[locale]/index.astro','src/pages/api/lead.ts','src/components/react/SceneExperience.tsx','src/components/react/MaterialLayerViewer.tsx','src/components/react/LeadDialog.tsx','scripts/record-runtime.mjs','scripts/materialize-visual-assets.mjs','wrangler.jsonc']) {
   const exists = files.some((file) => relative(root.pathname, file) === required);
   exists ? pass(`required:${required}`) : fail(`required:${required}`, 'missing');
 }
 
 const imageAssets = files.filter((file) => /public\/assets\/.+\.(webp|avif|png|svg)$/i.test(file));
-imageAssets.length >= 16 ? pass('owned-asset-library', `${imageAssets.length} local assets`) : fail('owned-asset-library', `only ${imageAssets.length} assets`);
+imageAssets.length >= 34 ? pass('owned-asset-library', `${imageAssets.length} local assets`) : fail('owned-asset-library', `only ${imageAssets.length} assets`);
+
+const stateAtlases = imageAssets.filter((file) => /public\/assets\/visual\/systems\/(bathroom|interior|kitchen|hospitality|furniture|exterior)-(desktop|mobile)\.avif$/i.test(relative(root.pathname, file)));
+stateAtlases.length === 12 ? pass('complete-state-atlases', '12 responsive system atlases') : fail('complete-state-atlases', `${stateAtlases.length} != 12`);
+const cardAssets = imageAssets.filter((file) => /public\/assets\/visual\/cards\/(bathroom|interior|kitchen|hospitality|furniture|exterior)-card\.avif$/i.test(relative(root.pathname, file)));
+cardAssets.length === 6 ? pass('system-card-assets', '6 owned system cards') : fail('system-card-assets', `${cardAssets.length} != 6`);
 
 const externalImage = /https?:\/\/(?:images\.unsplash|images\.pexels|.*cloudinary|.*imgix)/i.test(joined);
 externalImage ? fail('no-image-hotlinking', 'external image CDN reference detected') : pass('no-image-hotlinking');
@@ -37,7 +47,7 @@ externalImage ? fail('no-image-hotlinking', 'external image CDN reference detect
 for (const file of imageAssets) {
   const bytes = (await stat(file)).size;
   const name = relative(root.pathname, file);
-  const limit = name.includes('/scenes/') ? 900_000 : 450_000;
+  const limit = name.includes('/visual/systems/') ? 150_000 : name.includes('/scenes/') ? 900_000 : 450_000;
   bytes <= limit ? pass(`asset-budget:${name}`, `${bytes} B`) : fail(`asset-budget:${name}`, `${bytes} B exceeds ${limit}`);
 }
 
@@ -49,11 +59,16 @@ const suspicious = [
 ];
 for (const [name, pattern] of suspicious) pattern.test(joined) ? fail(name, 'forbidden pattern found') : pass(name);
 
+for (const [name, pattern] of [
+  ['no-runtime-material-overlay', /materialOverlay/],
+  ['no-runtime-material-mask', /data-mask|clip-path:\s*polygon/],
+]) pattern.test(productJoined) ? fail(name, 'legacy runtime replacement implementation found') : pass(name);
+
 const catalog = await readFile(new URL('../src/data/catalog.ts', import.meta.url), 'utf8');
-for (const [token, expected] of [['desktopImage:',6],['name:',9]]) {
-  const count = catalog.split(token).length - 1;
-  count >= expected ? pass(`catalog:${token}`, String(count)) : fail(`catalog:${token}`, `${count} < ${expected}`);
-}
+const systemCount = [...catalog.matchAll(/systemVisual\('(bathroom|interior|kitchen|hospitality|furniture|exterior)'/g)].length;
+systemCount === 6 ? pass('catalog:system-atlases', String(systemCount)) : fail('catalog:system-atlases', `${systemCount} != 6`);
+const materialCount = [...catalog.matchAll(/\{ id: '(?:bianco-lumen|crema-savona|taupe-mist|silver-cloud|greige-honed|dune-rift|noce-velvet|pietra-grey|calacatta-oro)'/g)].length;
+materialCount === 9 ? pass('catalog:materials', String(materialCount)) : fail('catalog:materials', `${materialCount} != 9`);
 
 const copy = await readFile(new URL('../src/data/copy.ts', import.meta.url), 'utf8');
 for (const locale of ['commonPagesEn','commonPagesDe','commonPagesFr','commonPagesCnr']) copy.includes(`const ${locale}`) ? pass(`localized-pages:${locale}`) : fail(`localized-pages:${locale}`, 'missing');

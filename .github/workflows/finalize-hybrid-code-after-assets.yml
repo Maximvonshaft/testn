@@ -1,0 +1,135 @@
+name: Finalize hybrid code after assets
+
+on:
+  push:
+    branches: [feat/hybrid-visual-system-final]
+    paths:
+      - qa-evidence/hybrid-recovery-status.txt
+      - .github/workflows/finalize-hybrid-code-after-assets.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: finalize-hybrid-code-after-assets
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/hybrid-visual-system-final
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.17.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22.16.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Require verified asset recovery
+        run: |
+          set -euo pipefail
+          grep -q '^result=PASS$' qa-evidence/hybrid-recovery-status.txt
+          node scripts/materialize-visual-assets.mjs
+      - name: Repair current architecture contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          from pathlib import Path
+          import re
+
+          catalog_path = Path('src/data/catalog.ts')
+          catalog = catalog_path.read_text()
+          if 'cardImage: string;' not in catalog:
+              catalog = catalog.replace('  mobileAtlas: string;\n', '  mobileAtlas: string;\n  cardImage: string;\n')
+          if 'cardImage: `/assets/scenes/${id}.svg`' not in catalog:
+              catalog = catalog.replace('  mobileAtlas: `${visualRoot}/systems/${id}-mobile.avif`,\n', '  mobileAtlas: `${visualRoot}/systems/${id}-mobile.avif`,\n  cardImage: `/assets/scenes/${id}.svg`,\n')
+          if 'export const projectImages' not in catalog:
+              marker = 'export const pageSlugs ='
+              addition = "export const projectImages = [\n  '/assets/scenes/exterior.svg',\n  '/assets/scenes/interior.svg',\n  '/assets/scenes/kitchen.svg',\n] as const;\n\n"
+              catalog = catalog.replace(marker, addition + marker)
+          catalog_path.write_text(catalog)
+
+          audit_path = Path('scripts/static-audit.mjs')
+          audit = audit_path.read_text()
+          if "from './materialize-visual-assets.mjs'" not in audit:
+              audit = audit.replace("import { extname, join, relative } from 'node:path';\n", "import { extname, join, relative } from 'node:path';\nimport { materializeVisualAssets } from './materialize-visual-assets.mjs';\n")
+          if 'await materializeVisualAssets();' not in audit:
+              audit = audit.replace("const root = new URL('../', import.meta.url);", "await materializeVisualAssets();\n\nconst root = new URL('../', import.meta.url);")
+          old = re.compile(r"for \(const \[token, expected\] of \[\['desktopImage:',6\],\['name:',9\]\]\) \{.*?\n\}", re.S)
+          replacement = """const systemCount = (catalog.match(/systemVisual\\('/g) ?? []).length;
+          systemCount === 6 ? pass('catalog:systems', String(systemCount)) : fail('catalog:systems', `${systemCount} != 6`);
+          const materialCount = (catalog.match(/\\{ id: '[^']+', name:/g) ?? []).length;
+          materialCount === 9 ? pass('catalog:materials', String(materialCount)) : fail('catalog:materials', `${materialCount} != 9`);
+          const stateAtlases = imageAssets.filter((file) => /public\\/assets\\/visual\\/systems\\/(?:bathroom|interior|kitchen|hospitality|furniture|exterior)-(?:desktop|mobile)\\.avif$/i.test(file));
+          stateAtlases.length === 12 ? pass('complete-state-atlases', '12 responsive system atlases') : fail('complete-state-atlases', `${stateAtlases.length} != 12`);"""
+          audit, count = old.subn(replacement, audit)
+          if count == 0 and 'catalog:systems' not in audit:
+              raise SystemExit('Legacy catalog audit block not found')
+          audit_path.write_text(audit)
+
+          unit_path = Path('tests/unit/content.test.ts')
+          unit = unit_path.read_text().replace('.desktopImage', '.desktopAtlas').replace('.mobileImage', '.mobileAtlas')
+          if "system.desktopAtlas.endsWith('.avif')" not in unit:
+              needle = "expect(new Set(materials.map((item) => item.id)).size).toBe(9);"
+              unit = unit.replace(needle, needle + "\n    for (const system of systems) {\n      expect(system.desktopAtlas.endsWith('.avif')).toBe(true);\n      expect(system.mobileAtlas.endsWith('.avif')).toBe(true);\n    }")
+          unit_path.write_text(unit)
+
+          e2e_path = Path('tests/e2e/home.spec.ts')
+          e2e = e2e_path.read_text()
+          pattern = re.compile(r"test\('switches product system and applies the selected material to the scene'.*?\n\}\);\n\ntest\('exposes the five-layer material architecture'", re.S)
+          replacement = """test('switches product system and applies a complete pre-rendered scene state', async ({ page }) => {
+            const experience = page.locator('[data-scene-experience]');
+            await expect(experience.locator('[data-state-atlas]')).toBeVisible();
+            await expect(experience.locator('[data-mask]')).toHaveCount(0);
+            const before = await experience.getAttribute('data-scene-state');
+            await page.locator('[role=\"tab\"]:visible').filter({ hasText: /Kitchen surfaces/i }).first().click();
+            await expect(experience).toHaveAttribute('data-scene-system', 'kitchen');
+            await page.locator('[role=\"option\"]:visible').filter({ hasText: 'Pietra Grey' }).click();
+            await expect(page.getByText(/Selected finish: Pietra Grey/i)).toBeVisible();
+            await expect(experience).toHaveAttribute('data-scene-state', 'kitchen:pietra-grey');
+            expect(await experience.getAttribute('data-scene-state')).not.toBe(before);
+          });
+
+          test('exposes the five-layer material architecture'"""
+          e2e, count = pattern.subn(replacement, e2e)
+          if count == 0 and 'complete pre-rendered scene state' not in e2e:
+              raise SystemExit('Legacy E2E material test not found')
+          e2e_path.write_text(e2e)
+          PY
+      - name: Run non-browser production gates
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+          pnpm test:static
+          pnpm test:unit
+          pnpm check
+          pnpm build
+      - name: Commit verified finalization
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf qa-evidence
+          rm -f \
+            .github/workflows/finalize-hybrid-code-after-assets.yml \
+            .github/workflows/finalize-hybrid-system.yml \
+            .github/workflows/recover-hybrid-assets.yml \
+            .github/workflows/recover-hybrid-assets-rest.yml \
+            .github/workflows/report-hybrid-recovery.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m 'fix: align hybrid visual assets and acceptance contracts'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin feat/hybrid-visual-system-final
+            git rebase origin/feat/hybrid-visual-system-final || { git rebase --abort || true; sleep 2; continue; }
+            if git push origin HEAD:feat/hybrid-visual-system-final; then exit 0; fi
+            sleep $((attempt * 2))
+          done
+          exit 1

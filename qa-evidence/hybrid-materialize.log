@@ -1,0 +1,9 @@
+file:///home/runner/work/testn/testn/scripts/materialize-visual-assets.mjs:35
+  if (!names.length) throw new Error('Hybrid visual asset bundle is missing.');
+                           ^
+
+Error: Hybrid visual asset bundle is missing.
+    at materialize (file:///home/runner/work/testn/testn/scripts/materialize-visual-assets.mjs:35:28)
+    at async file:///home/runner/work/testn/testn/scripts/materialize-visual-assets.mjs:71:3
+
+Node.js v22.23.1

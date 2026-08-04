@@ -33,9 +33,6 @@ test('renders the approved desktop/mobile information architecture', async ({ pa
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 
-  // WebKit's screenshot implementation injects a temporary stylesheet that a
-  // production CSP must reject. Visual evidence is captured in Chromium while
-  // WebKit and Firefox retain the same functional, runtime-error and axe gates.
   if (testInfo.project.name === 'chromium' || testInfo.project.name === 'mobile-chrome') {
     await page.screenshot({
       path: testInfo.outputPath('clean-runtime.png'),
@@ -46,17 +43,22 @@ test('renders the approved desktop/mobile information architecture', async ({ pa
   }
 });
 
-test('switches product system and applies the selected material to the scene', async ({ page }) => {
-  const title = page.locator('h1');
-  const overlay = page.locator('[data-scene-experience] [data-mask]');
-  const beforeImage = await overlay.getAttribute('style');
+test('switches complete product-system and material scene states', async ({ page }) => {
+  const hero = page.locator('[data-scene-experience] [data-scene-state]');
+  const initialAtlas = page.locator('[data-state-atlas]').first();
+  const beforeTransform = await initialAtlas.getAttribute('style');
+
   await page.locator('[role="tab"]:visible').filter({ hasText: /Kitchen surfaces/i }).first().click();
-  await expect(title).toContainText(/Performance/i);
+  await expect(hero).toHaveAttribute('data-scene-system', 'kitchen');
+  await expect(page.locator('h1')).toContainText(/Performance/i);
+  await expect(page.locator('[data-state-atlas]').first()).toHaveAttribute('src', /\/assets\/visual\/systems\/kitchen-desktop\.avif$/);
+
   await page.locator('[role="option"]:visible').filter({ hasText: 'Pietra Grey' }).click();
   await expect(page.getByText(/Selected finish: Pietra Grey/i)).toBeVisible();
-  const afterImage = await overlay.getAttribute('style');
-  expect(afterImage).not.toBe(beforeImage);
-  expect(afterImage).toContain('pietra-grey.svg');
+  await expect(hero).toHaveAttribute('data-scene-state', 'kitchen:pietra-grey');
+  const afterTransform = await page.locator('[data-state-atlas]').first().getAttribute('style');
+  expect(afterTransform).not.toBe(beforeTransform);
+  await expect(page.locator('[data-mask]')).toHaveCount(0);
 });
 
 test('exposes the five-layer material architecture', async ({ page }) => {
