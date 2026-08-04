@@ -1,0 +1,3 @@
+thumb: HTTP 200, bytes 11986, type PNG image data, 196 x 29, 8-bit/color RGB, non-interlaced, sha256 53d01f7b93ed8785580cfe0a1aa803bce86627763973e8dbd4e70c111838e555
+full-csig: HTTP 403, bytes 17, type ASCII text, with no line terminators, sha256 06227f24505ffa91c2c93fd249b237fa27d9cdb31645c30b6aa8528a6432df23
+full-osig: HTTP 403, bytes 19, type ASCII text, with no line terminators, sha256 986cb56795eb0a81bf6cbd26e1e9459a1bc37d5ac63afd7eee5bd693367dafae
