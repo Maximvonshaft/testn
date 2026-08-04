@@ -1,5 +1,8 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
+import { materializeVisualAssets } from './materialize-visual-assets.mjs';
+
+await materializeVisualAssets();
 
 const root = new URL('../', import.meta.url);
 const failures = [];
@@ -25,16 +28,18 @@ const source = await Promise.all(sourceFiles.map((file) => readFile(file, 'utf8'
 const joined = source.map(({ content }) => content).join('\n');
 const productJoined = (await Promise.all(productSourceFiles.map((file) => readFile(file, 'utf8')))).join('\n');
 
-for (const required of ['package.json','astro.config.mjs','src/pages/[locale]/index.astro','src/pages/api/lead.ts','src/components/react/SceneExperience.tsx','src/components/react/MaterialLayerViewer.tsx','src/components/react/LeadDialog.tsx','scripts/record-runtime.mjs','wrangler.jsonc']) {
+for (const required of ['package.json','astro.config.mjs','src/pages/[locale]/index.astro','src/pages/api/lead.ts','src/components/react/SceneExperience.tsx','src/components/react/MaterialLayerViewer.tsx','src/components/react/LeadDialog.tsx','scripts/record-runtime.mjs','scripts/materialize-visual-assets.mjs','wrangler.jsonc']) {
   const exists = files.some((file) => relative(root.pathname, file) === required);
   exists ? pass(`required:${required}`) : fail(`required:${required}`, 'missing');
 }
 
 const imageAssets = files.filter((file) => /public\/assets\/.+\.(webp|avif|png|svg)$/i.test(file));
-imageAssets.length >= 28 ? pass('owned-asset-library', `${imageAssets.length} local assets`) : fail('owned-asset-library', `only ${imageAssets.length} assets`);
+imageAssets.length >= 34 ? pass('owned-asset-library', `${imageAssets.length} local assets`) : fail('owned-asset-library', `only ${imageAssets.length} assets`);
 
 const stateAtlases = imageAssets.filter((file) => /public\/assets\/visual\/systems\/(bathroom|interior|kitchen|hospitality|furniture|exterior)-(desktop|mobile)\.avif$/i.test(relative(root.pathname, file)));
 stateAtlases.length === 12 ? pass('complete-state-atlases', '12 responsive system atlases') : fail('complete-state-atlases', `${stateAtlases.length} != 12`);
+const cardAssets = imageAssets.filter((file) => /public\/assets\/visual\/cards\/(bathroom|interior|kitchen|hospitality|furniture|exterior)-card\.avif$/i.test(relative(root.pathname, file)));
+cardAssets.length === 6 ? pass('system-card-assets', '6 owned system cards') : fail('system-card-assets', `${cardAssets.length} != 6`);
 
 const externalImage = /https?:\/\/(?:images\.unsplash|images\.pexels|.*cloudinary|.*imgix)/i.test(joined);
 externalImage ? fail('no-image-hotlinking', 'external image CDN reference detected') : pass('no-image-hotlinking');
