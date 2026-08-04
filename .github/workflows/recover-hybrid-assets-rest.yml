@@ -1,0 +1,81 @@
+name: Persist recovered hybrid assets
+
+on:
+  push:
+    branches: [feat/hybrid-visual-system-final]
+    paths: [.github/workflows/recover-hybrid-assets-rest.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: persist-recovered-hybrid-assets
+  cancel-in-progress: false
+
+jobs:
+  persist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/hybrid-visual-system-final
+          fetch-depth: 0
+      - name: Recover and persist historical chunks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: feat/hybrid-visual-system-final
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${REPOSITORY}"
+          auth=(-H "Authorization: Bearer ${GH_TOKEN}" -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28')
+          git fetch origin feat/hybrid-visual-system-v2:refs/remotes/origin/feat/hybrid-visual-system-v2
+          rm -rf /tmp/hybrid-recovery
+          mkdir -p /tmp/hybrid-recovery/src/assets-packed /tmp/hybrid-recovery/qa-evidence
+          mapfile -t files < <(git ls-tree -r --name-only origin/feat/hybrid-visual-system-v2 -- src/assets-packed | grep 'visual-bundle\.aqv\.b64\.' | sort || true)
+          for path in "${files[@]}"; do
+            git show "origin/feat/hybrid-visual-system-v2:${path}" > "/tmp/hybrid-recovery/${path}"
+          done
+          {
+            echo "recovered_count=${#files[@]}"
+            printf '%s\n' "${files[@]}"
+          } > /tmp/hybrid-recovery/qa-evidence/hybrid-asset-recovery.txt
+          cp -R /tmp/hybrid-recovery/src/assets-packed/. src/assets-packed/ 2>/dev/null || true
+          set +e
+          node scripts/materialize-visual-assets.mjs > /tmp/hybrid-recovery/qa-evidence/hybrid-materialize.log 2>&1
+          materialize_status=$?
+          set -e
+          echo "materialize_status=${materialize_status}" >> /tmp/hybrid-recovery/qa-evidence/hybrid-asset-recovery.txt
+          find /tmp/hybrid-recovery/src/assets-packed -maxdepth 1 -type f -printf '%f %s bytes\n' | sort >> /tmp/hybrid-recovery/qa-evidence/hybrid-asset-recovery.txt
+
+          put_file() {
+            local path="$1" source="$2" message="$3"
+            local encoded current payload
+            encoded=$(base64 -w0 "$source")
+            current=$(curl -fsSL "${auth[@]}" "${api}/contents/${path}?ref=${BRANCH}" 2>/dev/null | jq -r '.sha // empty' || true)
+            if [ -n "$current" ]; then
+              payload=$(jq -n --arg message "$message" --arg content "$encoded" --arg branch "$BRANCH" --arg sha "$current" '{message:$message,content:$content,branch:$branch,sha:$sha}')
+            else
+              payload=$(jq -n --arg message "$message" --arg content "$encoded" --arg branch "$BRANCH" '{message:$message,content:$content,branch:$branch}')
+            fi
+            curl -fsSL -X PUT "${auth[@]}" "${api}/contents/${path}" -d "$payload" >/dev/null
+          }
+
+          for path in "${files[@]}"; do
+            put_file "$path" "/tmp/hybrid-recovery/${path}" "assets: recover ${path##*/}"
+          done
+          put_file 'qa-evidence/hybrid-asset-recovery.txt' '/tmp/hybrid-recovery/qa-evidence/hybrid-asset-recovery.txt' 'test: record hybrid asset recovery'
+          put_file 'qa-evidence/hybrid-materialize.log' '/tmp/hybrid-recovery/qa-evidence/hybrid-materialize.log' 'test: record hybrid materializer result'
+
+          delete_path() {
+            local path="$1" sha payload
+            sha=$(curl -fsSL "${auth[@]}" "${api}/contents/${path}?ref=${BRANCH}" | jq -r .sha)
+            payload=$(jq -n --arg message "chore: remove temporary recovery workflow" --arg branch "$BRANCH" --arg sha "$sha" '{message:$message,branch:$branch,sha:$sha}')
+            curl -fsSL -X DELETE "${auth[@]}" "${api}/contents/${path}" -d "$payload" >/dev/null
+          }
+          delete_path '.github/workflows/recover-hybrid-assets-rest.yml'
+          for stale in '.github/workflows/recover-hybrid-assets.yml' '.github/workflows/canva-asset-probe.yml' '.github/workflows/drive-bundle-ingest.yml'; do
+            if curl -fsSL "${auth[@]}" "${api}/contents/${stale}?ref=${BRANCH}" >/dev/null 2>&1; then delete_path "$stale"; fi
+          done
