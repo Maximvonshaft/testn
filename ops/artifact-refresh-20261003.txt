@@ -1,0 +1,1 @@
+Temporary CI trigger used to regenerate the production build artifact on 2026-10-03. No application code changes. This branch/PR can be closed and removed after the artifact is captured.
